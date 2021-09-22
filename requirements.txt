@@ -1,3 +1,0 @@
-Django~=3.1.1
-psycopg2~=2.9.1; sys_platform != 'darwin'
-psycopg2-binary; sys_platform == 'darwin'
