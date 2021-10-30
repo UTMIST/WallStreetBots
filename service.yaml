@@ -1,0 +1,14 @@
+docs:
+  getting_started:
+    server: README.md
+    ml: ml/setup.md
+
+commands:
+  bootstrap: scripts/bootstrap.sh
+  database:
+    create: psql createdb wsbots_db
+    migrate: python manage.py migrate
+  server:
+    migrate: python manage.py migrate
+    start: python manage.py runserver
+    test: python manage.py test backend
