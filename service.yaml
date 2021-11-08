@@ -6,7 +6,7 @@ docs:
 commands:
   bootstrap: scripts/bootstrap.sh
   database:
-    create: psql createdb wsbots_db
+    create: psql createdb db
     migrate: python manage.py migrate
   server:
     migrate: python manage.py migrate
