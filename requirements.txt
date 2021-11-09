@@ -1,0 +1,5 @@
+dj_database_url==0.5.0
+Django==3.2.9
+djangorestframework==3.12.4
+feedparser==6.0.8
+python-dotenv==0.19.1
