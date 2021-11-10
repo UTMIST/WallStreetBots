@@ -32,10 +32,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.9
     # Database dependency (seems like I need to explicitly set it up here rather than in requirement).
     - name: psycopg2 prerequisites
       run: sudo apt-get install libpq-dev
@@ -43,10 +43,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    #bootstrap
-    - name: Run Bootstrap
-      run: |
-        ./scripts/bootstrap.sh
     #check syntax error etc. with flake8
     - name: Lint with flake8 
       run: |
