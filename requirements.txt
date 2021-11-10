@@ -1,6 +1,9 @@
-dj_database_url==0.5.0
-Django==3.2.9
-djangorestframework==3.12.4
-feedparser==6.0.8
-python-dotenv==0.19.1
+asgiref==3.4.1
+dj-config-url==0.1.1
+Django==3.2.8
 django-cors-headers==3.10.0
+djangorestframework==3.12.4
+psycopg2-binary==2.9.1
+python-dotenv==0.19.1
+pytz==2021.3
+sqlparse==0.4.2
