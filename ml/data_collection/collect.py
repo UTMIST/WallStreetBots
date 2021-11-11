@@ -5,6 +5,7 @@ import feedparser
 
 q = queue.Queue()
 
+
 def wait_for_newest_rss_feed_entry(url):
     feed = feedparser.parse(url)
     newest_entry_id = None

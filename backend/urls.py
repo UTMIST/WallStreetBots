@@ -14,10 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.shortcuts import render
 from django.urls import path, include, re_path
-import os
-from .settings import BASE_DIR
+# from django.shortcuts import render
+# import os
+# from .settings import BASE_DIR
 
 BASE_API_URL = "api"
 
