@@ -34,4 +34,3 @@ if __name__ == "__main__":
         if not q.empty():
             print("getting from queue")
             print(q.get())
-            
