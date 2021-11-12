@@ -7,51 +7,45 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    #I followed the tutorial below
-    #https://www.hacksoft.io/blog/github-actions-in-action-setting-up-django-and-postgres
-    
+  backend:
+    timeout-minutes: 5
+
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
-        
+
+    env:
+      SECRET_KEY: "secret_key"
+      
     services:
       postgres:
-        image: postgres:10.8
+        image: postgres:14.0
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: password
-          POSTGRES_DB: github_actions
+          POSTGRES_DB: test
         ports:
           - 5432:5432
-        #the port is 5432 as declared in settings.py
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    # Database dependency (seems like I need to explicitly set it up here rather than in requirement).
-    - name: psycopg2 prerequisites
-      run: sudo apt-get install libpq-dev
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    #check syntax error etc. with flake8
-    - name: Lint with flake8 
-      run: |
-        pip install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Run migrations
-      run: python manage.py migrate
-    - name: Run tests
-      run: python manage.py test
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+          # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Apply Migrations
+        run: python manage.py migrate
+      - name: Run tests
+        run: python manage.py test backend

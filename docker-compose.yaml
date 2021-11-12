@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  web-db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+  web:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0000:8000"
+    ports:
+      - "8000:8000"
+    restart: always
+    depends_on:
+      - web-db
