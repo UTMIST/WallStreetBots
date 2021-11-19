@@ -25,7 +25,7 @@ class RssSource:
         entry = feed['entries'][0]
         if self._newest_id is None or entry['id'] != self._newest_id:
             self._newest_id = entry['id']
-            return feed.entries[0]
+            return self.process_entry(entry)
         return None
 
 
@@ -48,5 +48,5 @@ urls = [
 
 if __name__ == "__main__":
     for url in urls:
-        rss_sources.append(RssSource(url, lambda x: x))
+        rss_sources.append(RssSource(url, process_rss_feed_entry))
     wait_for_newest_rss_feed_entry()
