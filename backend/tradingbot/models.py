@@ -11,6 +11,10 @@ class Company(models.Model):
 
 
 class StockTrade(models.Model):
+    # TODO: this is an overly simplistic model.
+    # need to add things like bought_price, sold_price, etc.
+    # or add transaction type (buy, sell, etc.) which is probably preferable
+    # should probably change to represent a single exchange instance instead of trying to show an entire buy/sell operation
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     price = models.FloatField()
     amount = models.IntegerField()
@@ -21,4 +25,4 @@ class StockTrade(models.Model):
 class StockTradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = StockTrade
-        fields = ('company', 'price', 'amount', 'bought_timestamp', 'sold_timestamp')
+        fields = ('company_id', 'price', 'amount', 'bought_timestamp', 'sold_timestamp')
