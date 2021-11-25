@@ -11,12 +11,14 @@ def get_raw_data(ticker, limit, date_from=None, date_to=None):
     if date_from is None:
         url = "https://eodhistoricaldata.com/api/news?api_token={}&s={}&offset=0&limit={}".format(API_TOKEN, ticker, limit)
     else:
-        url = "https://eodhistoricaldata.com/api/news?api_token={}&s={}&from={}&to={}&offset=0&limit={}".format(API_TOKEN, ticker, date_from, date_to, limit)
+        url = "https://eodhistoricaldata.com/api/news?api_token={}&s={}&from={}&to={}&offset=0&limit={}".\
+            format(API_TOKEN, ticker, date_from, date_to, limit)
     response = requests.get(url)
     content = response.content
     parsed = json.loads(content)
 
     return parsed
+
 
 def to_dataframe(parsed):
     d = {"date": [], "title": [], "content": [], "symbols": [], "tags": []}
@@ -30,6 +32,7 @@ def to_dataframe(parsed):
 
     return df
 
+
 def main():
     parsed = get_raw_data("AAPL.US", 10)
     df = to_dataframe(parsed)
@@ -38,8 +41,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-
-
-
-
