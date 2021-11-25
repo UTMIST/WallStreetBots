@@ -6,6 +6,7 @@ from .models import StockTrade, StockTradeSerializer, Company
 
 
 def index(request):
+    # ALPACA SECRET KEY
     return HttpResponse("Hello World, welcome to tradingbot!")
 
 
