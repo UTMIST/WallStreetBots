@@ -37,6 +37,7 @@ class StockTradeView(View):
             self.model.objects.create(company=company, price=price, amount=amount)
             return HttpResponse(status=status.HTTP_201_CREATED)
 
+
         return JsonResponse(
             {"data": "the only supported transactions are 'buy' or 'sell'"},
             status=status.HTTP_400_BAD_REQUEST
