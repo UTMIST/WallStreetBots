@@ -68,14 +68,14 @@ class APImanager():  # API manager for Alpaca
 
         To be completed
         """
-        api = tradeapi.REST()
-        clock = api.get_clock()
-
-        if clock.is_open:
-            return True
-        else:
-            return False
-
+        try:
+            clock = self.api.get_clock()
+            if clock.is_open:
+                return True
+            else:
+                return False
+        except Exception as e:
+            return "Failed to check market status from Alpaca " + str(e)
 
 
     def get_account(self):
