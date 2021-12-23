@@ -55,21 +55,28 @@ class APImanager():  # API manager for Alpaca
         except Exception as e:
             return "Failed to get price from Alpaca: " + str(e)
 
-    def market_close(t):
-        '''
+    def market_close(self):
+        """
         checks if market closes
 
         Args:
           t: the time to check if the market is closed
+          if no argument is passed, check if the market is currently open or closed
 
         Returns:
           True / False
 
         To be completed
-        '''
+        """
+        api = tradeapi.REST()
+        clock = api.get_clock()
 
-        # always return true for now
-        return True
+        if clock.is_open:
+            return True
+        else:
+            return False
+
+
 
     def get_account(self):
         """
