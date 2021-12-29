@@ -1,6 +1,8 @@
 from urllib.request import urlopen, Request
-from bs4 import BeautifulSoup
+
 import pandas as pd
+from bs4 import BeautifulSoup
+
 from interface import NewsSourceInterface
 
 
@@ -59,7 +61,6 @@ class FinVizArticles(NewsSourceInterface):
         df.drop(["time", "link"], axis=1, inplace=True)
         df.rename(columns={'header': 'title'}, inplace=True)
         return df
-
 
 
 if __name__ == '__main__':
