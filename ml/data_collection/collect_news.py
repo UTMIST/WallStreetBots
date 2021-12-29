@@ -42,6 +42,7 @@ class NewsSource(NewsSourceInterface):
     def get_news(self):
         parsed = self.get_raw_data()
         df = self.to_dataframe(parsed)
+        df.drop(["content", "symbols", "tags"], axis=1, inplace=True)
         return df
 
 

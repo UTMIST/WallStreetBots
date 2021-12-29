@@ -55,7 +55,11 @@ class FinVizArticles(NewsSourceInterface):
     def get_news(self) -> pd.DataFrame:
         html_tag = self.get_raw_ticker()
         table = self.tag_to_table(html_tag)
-        return pd.DataFrame(table[1:], columns=table[0])
+        df = pd.DataFrame(table[1:], columns=table[0])
+        df.drop(["time", "link"], axis=1, inplace=True)
+        df.rename(columns={'header': 'title'}, inplace=True)
+        return df
+
 
 
 if __name__ == '__main__':
