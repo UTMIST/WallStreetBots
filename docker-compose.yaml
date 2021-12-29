@@ -9,7 +9,7 @@ services:
       POSTGRES_DB: db
   web:
     build: .
-    command: sh -c "python manage.py migrate && python manage.py runserver 0000:8000"
+    command: sh -c "python manage.py migrate && python manage.py runserver 0000:8000 && python manage.py collectstatic"
     ports:
       - "8000:8000"
     restart: always
