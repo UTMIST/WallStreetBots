@@ -19,7 +19,10 @@ class NewsSource(NewsSourceInterface):
                 format(self.API_TOKEN, self.ticker, date_from, date_to, self.num_rows)
         response = requests.get(url)
         content = response.content
-        parsed = json.loads(content)
+        try:
+            parsed = json.loads(content)
+        except json.decoder.JSONDecodeError:
+            parsed = {}
 
         return parsed
 
