@@ -130,3 +130,6 @@ dmypy.json
 
 # JetBrains stuff
 .idea
+
+# Data stuff
+**.csv
