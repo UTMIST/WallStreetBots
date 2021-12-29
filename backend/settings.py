@@ -47,10 +47,19 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
     'backend.tradingbot.apps.TradingbotConfig',
     'backend.home.apps.HomeConfig',
+    'backend.auth0login.apps.Auth0LoginConfig',
+
+    # Authentication
+    'social_django',
+
+    # Customization
+    'admin_interface',
+    'colorfield',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +141,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATIC_URL = '/static/'
+
+# Auth0 authentication
+SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
+SOCIAL_AUTH_AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+SOCIAL_AUTH_AUTH0_KEY = os.environ.get('AUTH0_CLIENT_ID')
+SOCIAL_AUTH_AUTH0_SECRET = os.environ.get('AUTH0_CLIENT_SECRET')
+SOCIAL_AUTH_AUTH0_SCOPE = [
+    'openid',
+    'profile',
+    'email'
+]
+AUTHENTICATION_BACKENDS = {
+    'backend.auth0login.auth0backend.Auth0',
+    'django.contrib.auth.backends.ModelBackend'
+}
+LOGIN_URL = '/login/auth0'
+LOGIN_REDIRECT_URL = '/dashboard'
