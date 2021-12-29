@@ -1,6 +1,8 @@
-import requests
 import json
+
 import pandas as pd
+import requests
+
 from interface import NewsSourceInterface
 
 
@@ -13,7 +15,8 @@ class NewsSource(NewsSourceInterface):
 
     def get_raw_data(self, date_from=None, date_to=None):
         if date_from is None:
-            url = "https://eodhistoricaldata.com/api/news?api_token={}&s={}&offset=0&limit={}".format(self.API_TOKEN, self.ticker, self.num_rows)
+            url = "https://eodhistoricaldata.com/api/news?api_token={}&s={}&offset=0&limit={}"\
+                .format(self.API_TOKEN, self.ticker, self.num_rows)
         else:
             url = "https://eodhistoricaldata.com/api/news?api_token={}&s={}&from={}&to={}&offset=0&limit={}". \
                 format(self.API_TOKEN, self.ticker, date_from, date_to, self.num_rows)

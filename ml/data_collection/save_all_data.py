@@ -1,6 +1,7 @@
-from collect_news import NewsSource
-from collect_finviz_articles import FinVizArticles
 import fire
+
+from collect_finviz_articles import FinVizArticles
+from collect_news import NewsSource
 
 
 def main(input_file: str = "stock_list.txt"):
