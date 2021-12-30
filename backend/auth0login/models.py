@@ -15,7 +15,7 @@ class Credential(models.Model):
     class Meta:
         ordering = ['user']
 
-    #Methods
+    # Methods
     def __str__(self):
         return "Credential for " + str(self.user)
 
@@ -48,3 +48,49 @@ class Order(models.Model):
         return f"Order {self.order_number} \n User: {self.user} \n" \
                f"Timestamp: {self.timestamp} \n Company: {str(self.company)}" \
                f"Order type: {self.order_type} \n Price: {self.price} \n Quantity: {self.quantity}"
+
+
+class Portfolio(models.Model):
+    """Portfolio for a user"""
+    name = models.CharField(blank=False, help_text="Portfolio name")
+    user = models.ForeignKey(User, help_text='Associated user', on_delete=models.CASCADE)
+
+    # Metadata
+    class Meta:
+        ordering = ['user']
+
+    # Methods
+    def __str__(self):
+        return f'Portfolio: {self.name} \n User: {str(self.user)}'
+
+
+class BotInstance(models.Model):
+    """An instance of a bot"""
+    name = models.CharField(blank=False, help_text="Bot Name")
+    portfolio = models.OneToOneField(Portfolio, blank = True,help_text='Associated portfolio', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, help_text='Associated user', on_delete=models.CASCADE)
+    bot = None  # To Be Completed
+
+    # Metadata
+    class Meta:
+        ordering = ['user']
+
+    # Methods
+    def __str__(self):
+        return f'Bot: {self.name} \n User: {str(self.user)} \n' \
+               f' Portfolio: {self.portfolio.name}'
+
+
+class StockInstance(models.Model):
+    """An instance of a stock"""
+    portfolio = models.ForeignKey(Portfolio,help_text='Associated portfolio', on_delete=models.CASCADE)
+    stock = None  # To Be Completed
+    quantity = models.DecimalField(max_digits=8, decimal_places=2, help_text='quantity')
+
+    # Metadata
+    class Meta:
+        ordering = ['portfolio']
+
+    # Methods
+    def __str__(self):
+        return f'Stock: {str(self.stock)} \n Quantity: {self.quantity} \n Portfolio: {self.portfolio.name}'
