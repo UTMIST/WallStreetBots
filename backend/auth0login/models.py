@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from backend.tradingbot.models import Company
 
 
 class Credential(models.Model):
@@ -34,14 +35,14 @@ class Order(models.Model):
     order_number = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(User, help_text='Associated user', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True, help_text='order timestamp')
-    # company = None  # leave empty for now
+    company = models.ForeignKey(Company, help_text='Company', on_delete=models.CASCADE)
     order_type = models.CharField(choices=ORDERTYPES, max_length=2, help_text='order type')
     price = models.DecimalField(max_digits=8, decimal_places=2, help_text='order price')
     quantity = models.DecimalField(max_digits=8, decimal_places=2, help_text='quantity')
 
     # Metadata
     class Meta:
-        ordering = ['user', 'timestamp', 'order_type']
+        ordering = ['user', 'timestamp', 'order_type', 'company']
 
     # Methods
     def __str__(self):
@@ -54,6 +55,7 @@ class Portfolio(models.Model):
     """Portfolio for a user"""
     name = models.CharField(max_length=100, blank=False, help_text="Portfolio name")
     user = models.ForeignKey(User, help_text='Associated user', on_delete=models.CASCADE)
+    cash = models.DecimalField(max_digits=10, decimal_places=2, help_text='Cash')
 
     # Metadata
     class Meta:
@@ -69,7 +71,7 @@ class BotInstance(models.Model):
     name = models.CharField(max_length=100, blank=False, help_text="Bot Name")
     portfolio = models.OneToOneField(Portfolio, blank = True,help_text='Associated portfolio', on_delete=models.CASCADE)
     user = models.ForeignKey(User, help_text='Associated user', on_delete=models.CASCADE)
-    # bot = None  # To Be Completed
+    bot = None  # To Be Completed
 
     # Metadata
     class Meta:
@@ -84,7 +86,7 @@ class BotInstance(models.Model):
 class StockInstance(models.Model):
     """An instance of a stock"""
     portfolio = models.ForeignKey(Portfolio, help_text='Associated portfolio', on_delete=models.CASCADE)
-    # stock = None  # To Be Completed
+    stock = None  # To Be Completed
     quantity = models.DecimalField(max_digits=8, decimal_places=2, help_text='quantity')
 
     # Metadata
