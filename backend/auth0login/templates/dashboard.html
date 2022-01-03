@@ -1,6 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
 <div class="logged-in-box auth0-box logged-in">
     <img class="avatar" src="{{ auth0User.extra_data.picture }}"/>
     <h2>Welcome {{ user.username }}</h2>
-    <pre>{{ userdata }}</pre>
+    <pre>{{ userdata.user }}</pre>
+
+
+
+    <p> Hello {{userdata.name}}! <br>
+        Email: {{userdata.name}} <br>
+
+    </p>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+        {{ form.as_table }}
+        </table>
+        <input type="submit" value="Save">
+    </form>
+
     <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+
 </div>
+
+</body>
+</html>

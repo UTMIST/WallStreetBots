@@ -1,6 +1,12 @@
 from django import forms
+from .models import Credential
 
 
-class AlpacaIDForm(forms.Form):
-    alpaca_id = forms.CharField(help_text='Alpaca ID', max_length=100)
-    alpaca_key = forms.CharField(help_text='Alpaca Secret Key', max_length=100)
+class CredentialModelForm(forms.ModelForm):
+    class Meta:
+        model = Credential
+        fields = [
+            'user',
+            'alpaca_id',
+            'alpaca_key'
+        ]
