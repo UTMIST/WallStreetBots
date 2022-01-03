@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 
 class Company(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.TextField()
     ticker = models.CharField(max_length=5, unique=True)
 
