@@ -28,11 +28,17 @@ def dashboard(request):
         'Alpaca Secret key': alpaca_key,
         'email': auth0user.extra_data['email'],
     }
-    from backend.auth0login.forms import CredentialModelForm
-    form = CredentialModelForm(request.POST or None)
+    from backend.auth0login.forms import CredentialForm
+    form = CredentialForm(request.POST or None)
 
     if form.is_valid():
-        form.save()
+        if hasattr(user, 'credential'):
+            user.credential.alpaca_id = form.get_id()
+            user.credential.alpaca_key = form.get_key()
+        else:
+            from .models import Credential
+            cred = Credential(user=request.user, alpaca_id=form.get_id(), alpaca_key=form.get_key())
+            cred.save()
 
     return render(request, 'dashboard.html', {
         'form': form,
