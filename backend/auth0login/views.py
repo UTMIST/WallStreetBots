@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.db import connection
-from django.contrib.auth.decorators import login_required
-import json
-from django.contrib.auth import logout as log_out
-from django.conf import settings
 from urllib.parse import urlencode
+
+from django.conf import settings
+from django.contrib.auth import logout as log_out
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 
 
 def login(request):

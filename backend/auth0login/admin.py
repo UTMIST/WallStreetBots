@@ -16,4 +16,3 @@ admin.site.register(Order, OrderAdmin)
 admin.site.register(Portfolio)
 admin.site.register(BotInstance)
 admin.site.register(StockInstance)
-

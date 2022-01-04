@@ -1,5 +1,6 @@
-import requests, json
 import alpaca_trade_api as tradeapi
+import json
+import requests
 
 
 class APImanager():  # API manager for Alpaca
@@ -76,7 +77,6 @@ class APImanager():  # API manager for Alpaca
                 return False
         except Exception as e:
             return "Failed to check market status from Alpaca " + str(e)
-
 
     def get_account(self):
         """
