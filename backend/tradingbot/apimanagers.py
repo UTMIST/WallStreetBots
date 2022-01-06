@@ -1,11 +1,10 @@
 import alpaca_trade_api as tradeapi
-import json
-import requests
+import alpaca_trade_api.common
 
 
 class APImanager():  # API manager for Alpaca
     def __init__(self, API_KEY, SECRET_KEY):
-        self.BASE_URL = "https://paper-api.alpaca.markets"
+        self.BASE_URL = alpaca_trade_api.common.URL("https://paper-api.alpaca.markets")
         self.ACCOUNT_URL = "{}/v2/account".format(self.BASE_URL)
         self.API_KEY = API_KEY
         self.SECRET_KEY = SECRET_KEY
@@ -105,7 +104,7 @@ class APImanager():  # API manager for Alpaca
             #  account = json.loads(r.content)
             return self.api.get_account()
         except Exception as e:
-            return "Failed to accesss account: " + str(e)
+            return "Failed to accesses account: " + str(e)
 
     def market_buy(self, symbol, qty):
         """
