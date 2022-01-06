@@ -9,7 +9,19 @@ class APImanager():  # API manager for Alpaca
         self.ACCOUNT_URL = "{}/v2/account".format(self.BASE_URL)
         self.API_KEY = API_KEY
         self.SECRET_KEY = SECRET_KEY
-        self.api = tradeapi.REST(API_KEY, SECRET_KEY, self.BASE_URL, api_version='v2')
+        if self.validate_api()[0]:
+            self.api = tradeapi.REST(API_KEY, SECRET_KEY, self.BASE_URL, api_version='v2')
+
+    def validate_api(self):
+        """
+        Test if the API ID/Key pair is valid
+        """
+        try:
+            self.api = tradeapi.REST(self.API_KEY, self.SECRET_KEY, self.BASE_URL, api_version='v2')
+            self.api.get_account()
+            return True, "api id/key pair validated"
+        except Exception as e:
+            return False, str(e)
 
     def get_bar(self, symbol, timestep, start, end, price_type="close"):
         """
@@ -89,9 +101,9 @@ class APImanager():  # API manager for Alpaca
           the account in the format of a json string
         """
         try:
-            r = requests.get(self.ACCOUNT_URL, headers={'APCA-API-KEY-ID': self.API_KEY, 'APCA-API-SECRET-KEY': self.SECRET_KEY})
-            account = json.loads(r.content)
-            return account
+            #  r = requests.get(self.ACCOUNT_URL, headers={'APCA-API-KEY-ID': self.API_KEY, 'APCA-API-SECRET-KEY': self.SECRET_KEY})
+            #  account = json.loads(r.content)
+            return self.api.get_account()
         except Exception as e:
             return "Failed to accesss account: " + str(e)
 
