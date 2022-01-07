@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Credential, Order, Portfolio, BotInstance, StockInstance
+from .models import Credential, BotInstance
+from ..tradingbot.models import Order, Portfolio, StockInstance
 
 
 class CredentialAdmin(admin.ModelAdmin):

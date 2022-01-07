@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from rest_framework import serializers
 
@@ -95,3 +96,63 @@ class StockTradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = StockTrade
         fields = ('company_id', 'price', 'amount', 'bought_timestamp', 'sold_timestamp')
+
+
+class Order(models.Model):
+    """Historical orders for user"""
+    ORDERTYPES = [
+        ('MB', 'Market buy'),
+        ('MS', 'Market sell'),
+        ('LB', 'Limit buy'),
+        ('LS', 'Limit sell'),
+        ('SB', 'Stop buy'),
+        ('SS', 'Stop sell'),
+    ]
+    # Fields
+    order_number = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(User, help_text='Associated user', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True, help_text='order timestamp')
+    company = models.ForeignKey(Company, help_text='Company', on_delete=models.CASCADE)
+    order_type = models.CharField(choices=ORDERTYPES, max_length=2, help_text='order type')
+    price = models.DecimalField(max_digits=8, decimal_places=2, help_text='order price')
+    quantity = models.DecimalField(max_digits=8, decimal_places=2, help_text='quantity')
+
+    # Metadata
+    class Meta:
+        ordering = ['user', 'timestamp', 'order_type', 'company']
+
+    # Methods
+    def __str__(self):
+        return f"Order {self.order_number} \n User: {self.user} \n" \
+               f"Timestamp: {self.timestamp} \n Company: {str(self.company)}" \
+               f"Order type: {self.order_type} \n Price: {self.price} \n Quantity: {self.quantity}"
+
+
+class Portfolio(models.Model):
+    """Portfolio for a user"""
+    name = models.CharField(max_length=100, blank=False, help_text="Portfolio name")
+    user = models.OneToOneField(User, help_text='Associated user', on_delete=models.CASCADE)
+    cash = models.DecimalField(max_digits=10, decimal_places=2, help_text='Cash')
+
+    # Metadata
+    class Meta:
+        ordering = ['user']
+
+    # Methods
+    def __str__(self):
+        return f'Portfolio: {self.name} \n User: {str(self.user)}'
+
+
+class StockInstance(models.Model):
+    """An instance of a stock"""
+    portfolio = models.ForeignKey(Portfolio, help_text='Associated portfolio', on_delete=models.CASCADE)
+    stock = models.ForeignKey(Stock, help_text='Associated stock', on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=8, decimal_places=2, help_text='quantity')
+
+    # Metadata
+    class Meta:
+        ordering = ['portfolio']
+
+    # Methods
+    def __str__(self):
+        return f'Stock: {str(self.stock)} \n Quantity: {self.quantity} \n Portfolio: {self.portfolio.name}'
