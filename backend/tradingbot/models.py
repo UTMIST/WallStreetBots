@@ -101,30 +101,34 @@ class StockTradeSerializer(serializers.ModelSerializer):
 class Order(models.Model):
     """Historical orders for user"""
     ORDERTYPES = [
-        ('MB', 'Market buy'),
-        ('MS', 'Market sell'),
-        ('LB', 'Limit buy'),
-        ('LS', 'Limit sell'),
-        ('SB', 'Stop buy'),
-        ('SS', 'Stop sell'),
+        ('M', 'Market'),
+        ('L', 'Limit'),
+        ('S', 'Stop'),
+        ('ST', 'Stop Limit'),
+        ('T', 'Trailing Stop'),
+    ]
+    TRANSACTIONTYPES = [
+        ('B', 'Buy'),
+        ('S', 'Sell'),
     ]
     # Fields
     order_number = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(User, help_text='Associated user', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, help_text='associated user', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True, help_text='order timestamp')
-    company = models.ForeignKey(Company, help_text='Company', on_delete=models.CASCADE)
+    stock = models.ForeignKey(Stock, help_text='associated stock', on_delete=models.CASCADE)
     order_type = models.CharField(choices=ORDERTYPES, max_length=2, help_text='order type')
-    price = models.DecimalField(max_digits=8, decimal_places=2, help_text='order price')
+    price = models.DecimalField(max_digits=8, decimal_places=2, help_text='order price', null=True)
     quantity = models.DecimalField(max_digits=8, decimal_places=2, help_text='quantity')
+    transaction_type = models.CharField(choices=TRANSACTIONTYPES, max_length=2, help_text='buy or sell transaction type')
 
     # Metadata
     class Meta:
-        ordering = ['user', 'timestamp', 'order_type', 'company']
+        ordering = ['user', 'timestamp', 'order_type']
 
     # Methods
     def __str__(self):
         return f"Order {self.order_number} \n User: {self.user} \n" \
-               f"Timestamp: {self.timestamp} \n Company: {str(self.company)}" \
+               f"Timestamp: {self.timestamp} \n Company: {str(self.stock)}" \
                f"Order type: {self.order_type} \n Price: {self.price} \n Quantity: {self.quantity}"
 
 
