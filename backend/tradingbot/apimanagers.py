@@ -101,19 +101,32 @@ class APImanager():  # API manager for Alpaca
           the account in the format of a json string
         """
         try:
-            #  r = requests.get(self.ACCOUNT_URL, headers={'APCA-API-KEY-ID': self.API_KEY, 'APCA-API-SECRET-KEY': self.SECRET_KEY})
-            #  account = json.loads(r.content)
             return self.api.get_account()
         except Exception as e:
-            return "Failed to accesss account: " + str(e)
+            return "Failed to access account: " + str(e)
+
+    def get_positions(self):
+        """
+        Get the account using the URL and the API_KEY
+
+        Args:
+          N/A
+
+        Returns:
+          the account in the format of a json string
+        """
+        try:
+            return self.api.list_positions()
+        except Exception as e:
+            return "Failed to access portfolio: " + str(e)
 
     def market_buy(self, symbol, qty):
         """
-        Buy the stocks specificied
+        Buy the stocks specified
 
         Args:
-          Strock Symbol (String)
-          Quantity (int)
+          symbol (String)
+          qty (int)
 
         Returns:
 
@@ -136,8 +149,8 @@ class APImanager():  # API manager for Alpaca
         Sell the stock specified
 
         Args:
-          Strock Symbol (String)
-          Quantity (int)
+          symbol (String)
+          qty (int)
 
         Returns:
           N/A

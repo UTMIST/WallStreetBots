@@ -73,11 +73,11 @@ def sync_alpaca(user):
         sync user related database data with Alpaca
         this is a simplified, incomplete version.
     """
+    user_details = {}
     # check if user has credential
     if not hasattr(user, 'credential'):
         return
 
-    user_details = {}
     from backend.tradingbot.apimanagers import APImanager
     api = APImanager(user.credential.alpaca_id, user.credential.alpaca_key)
 
@@ -85,8 +85,14 @@ def sync_alpaca(user):
     if not api.validate_api()[0]:
         print(api.validate_api()[1])
         return
+
+    # get account information
     account = api.get_account()
-    print(account)
     user_details['equity'] = account.equity
     user_details['buy_power'] = account.buying_power
+
+    # get portfolio information
+    portfolio = api.get_positions()
+    for position in portfolio:
+        print("{} shares of {}".format(position.qty, position.symbol))
     return user_details
