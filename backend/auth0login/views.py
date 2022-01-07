@@ -112,14 +112,17 @@ def sync_alpaca(user):
     print(account)
     # user-specific synchronization
     # 1) check if user has a portfolio
-    """
+    # 2) update cash
     if not hasattr(user, 'portfolio'):
         from .models import Portfolio
-        port = Portfolio(user=user, cash=, name='default-1')
+        port = Portfolio(user=user, cash=account.cash, name=user.first_name)
         port.save()
-    """
-    # 2) update portfolio cash
+
     # 3) check if user has stock instance
+
+    #if not hasattr(user, 'stock'):
+
+
     # for position in portfolio:
     #
 
