@@ -1,8 +1,10 @@
+from http import HTTPStatus
+
 import alpaca_trade_api as tradeapi
 import alpaca_trade_api.common
 
 
-class APImanager():  # API manager for Alpaca
+class AlpacaManager():  # API manager for Alpaca
     def __init__(self, API_KEY, SECRET_KEY):
         self.BASE_URL = alpaca_trade_api.common.URL("https://paper-api.alpaca.markets")
         self.ACCOUNT_URL = "{}/v2/account".format(self.BASE_URL)
@@ -130,18 +132,20 @@ class APImanager():  # API manager for Alpaca
         Returns:
 
         """
-        try:
-            self.api.submit_order(
-                symbol=symbol,
-                qty=qty,
-                side='buy',
-                type='market',
-                time_in_force='gtc'
-            )
-            log = 'Success to market buy'
-        except Exception as e:
-            log = 'Failed to market buy: ' + str(e)
-        return log
+        res = self.api.submit_order(
+            symbol=symbol,
+            qty=qty,
+            side='buy',
+            type='market',
+            time_in_force='gtc'
+        )
+        if res.status == HTTPStatus.FORBIDDEN:
+            print("Insufficient funds")
+            return False
+        if res.status == HTTPStatus.UNPROCESSABLE_ENTITY:
+            print("Malformed request")
+            return False
+        return True
 
     def market_sell(self, symbol, qty):
         """
