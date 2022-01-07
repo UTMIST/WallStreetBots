@@ -34,9 +34,9 @@ class Tweets(models.Model):
 class Company(models.Model):
     """Company entity"""
     name = models.TextField()
-    ticker = models.BigAutoField(primary_key=True)
-    news = models.ManyToManyField(News)
-    tweets = models.ManyToManyField(Tweets)
+    ticker = models.CharField(max_length=255, primary_key=True)
+    news = models.ManyToManyField(News, blank=True)
+    tweets = models.ManyToManyField(Tweets, blank=True)
 
     # Metadata
     class Meta:
@@ -61,7 +61,7 @@ class Stock(models.Model):
 
     # Methods
     def __str__(self):
-        return None  # To Be Completed
+        return str(self.company)  # To Be Completed
 
 
 class Price(models.Model):

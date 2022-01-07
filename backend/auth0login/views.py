@@ -97,5 +97,32 @@ def sync_alpaca(user):
     for position in portfolio:
         print("{} shares of {}".format(position.qty, position.symbol))
 
+    # non-user specific synchronization. e.g. add new company, new stock if it didn't exist
+    from backend.tradingbot.models import Company, Stock
+    for position in portfolio:
+        if not Company.objects.filter(ticker=position.symbol).exists():
+            # add Company
+            company = Company(name=position.symbol, ticker=position.symbol)
+            company.save()
+            # add Stock
+            stock = Stock(company=company)
+            stock.save()
+            print(f"added {position.symbol} to Company and Stock")
+
+    print(account)
+    # user-specific synchronization
+    # 1) check if user has a portfolio
+    """
+    if not hasattr(user, 'portfolio'):
+        from .models import Portfolio
+        port = Portfolio(user=user, cash=, name='default-1')
+        port.save()
+    """
+    # 2) update portfolio cash
+    # 3) check if user has stock instance
+    # for position in portfolio:
+    #
+
+
     user_details['portfolio'] = portfolio
     return user_details

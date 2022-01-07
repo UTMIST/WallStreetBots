@@ -55,7 +55,7 @@ class Order(models.Model):
 class Portfolio(models.Model):
     """Portfolio for a user"""
     name = models.CharField(max_length=100, blank=False, help_text="Portfolio name")
-    user = models.ForeignKey(User, help_text='Associated user', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, help_text='Associated user', on_delete=models.CASCADE)
     cash = models.DecimalField(max_digits=10, decimal_places=2, help_text='Cash')
 
     # Metadata
