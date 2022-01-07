@@ -20,6 +20,13 @@
     <h1>Total Equity: $ {{ userdata.total_equity }}</h1>
     <h2>Buying Power: $ {{ userdata.buy_power }}</h2>
 
+    {% for position in userdata.portfolio %}
+    <tr>
+         <td>{{ position.symbol }}</td>
+         <td>{{ position.qty }}</td>
+    </tr>
+    {% endfor %}
+
 </div>
 
 </body>

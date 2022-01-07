@@ -37,6 +37,7 @@ def dashboard(request):
             'alpaca_key': "*"*len(alpaca_key),
             'total_equity': user_details['equity'],
             'buy_power': user_details['buy_power'],
+            'portfolio': user_details['portfolio'],
         }
 
     # let user input their Alpaca API information
@@ -56,7 +57,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', {
         'form': form,
         'auth0User': auth0user,
-        'userdata': userdata  # json.dumps(userdata, indent=4)
+        'userdata': userdata
     })
 
 
@@ -95,4 +96,6 @@ def sync_alpaca(user):
     portfolio = api.get_positions()
     for position in portfolio:
         print("{} shares of {}".format(position.qty, position.symbol))
+
+    user_details['portfolio'] = portfolio
     return user_details
