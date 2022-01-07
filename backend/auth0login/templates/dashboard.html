@@ -1,32 +1,38 @@
 <!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'dashboard/style.css' %}">
 <html>
 <body>
 <div class="logged-in-box auth0-box logged-in">
     <img class="avatar" src="{{ auth0User.extra_data.picture }}"/>
     <h2>Welcome {{ user.username }}</h2>
 
-    <p> Alpaca ID: {{userdata.alpaca_id}} <br>
-        Alpaca Key: {{userdata.alpaca_key}}
+    <p> Alpaca ID: {{ userdata.alpaca_id }} <br>
+        Alpaca Key: {{ userdata.alpaca_key }}
     </p>
-    <p>{{userdata.error}}</p>
+    <p>{{ userdata.error }}</p>
     <form action="" method="post">
         {% csrf_token %}
         <table>
-        {{ form.as_table }}
+            {{ form.as_table }}
         </table>
         <input type="submit" value="Save">
     </form>
     <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+</div>
+
+<div>
     <h1>Total Equity: $ {{ userdata.total_equity }}</h1>
     <h2>Buying Power: $ {{ userdata.buy_power }}</h2>
+</div>
 
-    {% for position in userdata.portfolio %}
-    <tr>
-         <td>{{ position.symbol }}</td>
-         <td>{{ position.qty }}</td>
-    </tr>
-    {% endfor %}
-
+<div class="positions">
+    <h1>Current positions</h1>
+    <ul>
+        {% for position in userdata.portfolio %}
+            <li>{{ position.symbol }} - {{ position.qty }} shares</li>
+        {% endfor %}
+    </ul>
 </div>
 
 </body>
