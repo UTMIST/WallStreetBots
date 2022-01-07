@@ -79,8 +79,8 @@ def sync_alpaca(user):
     if not hasattr(user, 'credential'):
         return
 
-    from backend.tradingbot.apimanagers import APImanager
-    api = APImanager(user.credential.alpaca_id, user.credential.alpaca_key)
+    from backend.tradingbot.apimanagers import AlpacaManager
+    api = AlpacaManager(user.credential.alpaca_id, user.credential.alpaca_key)
 
     # check if api is valid
     if not api.validate_api()[0]:

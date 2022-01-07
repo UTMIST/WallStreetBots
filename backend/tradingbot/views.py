@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from rest_framework import status
 
-from .apimanagers import APImanager
+from .apimanagers import AlpacaManager
 from .models import Stock, Order, Portfolio
 
 
@@ -20,7 +20,7 @@ def stock_trade(request):
     # price is used for other order types, commented out for linter for now
     # price = float(request.POST.get('price')) if request.POST.get('price') else None
     portfolio_name = request.POST.get('portfolio')
-    alpaca_api = APImanager(user.credential.alpaca_id, user.credential.alpaca_key)
+    alpaca_api = AlpacaManager(user.credential.alpaca_id, user.credential.alpaca_key)
     quantity = int(request.POST.get('quantity'))
 
     if transaction_side == 'sell':

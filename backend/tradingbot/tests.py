@@ -1,8 +1,13 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-
 from .models import Company, StockTrade
+from .apimanagers import AlpacaManager
+import unittest
+
+class AlpacaManagerTests(unittest.TestCase):
+    def test_get_stock_price(self):
+        self.assertEqual(AlpacaManager.get_stock_price('AAPL'), '149.99')
 
 # TODO: need to change all these tests because all the models changed as well
 # class TradingbotTests(APITestCase):
