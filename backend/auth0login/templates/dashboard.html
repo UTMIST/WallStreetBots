@@ -14,9 +14,9 @@
     <form action="" method="post">
         {% csrf_token %}
         <table>
-            {{ form.as_table }}
+            {{ credential_form.as_table }}
         </table>
-        <input type="submit" value="Save">
+        <input type="submit" name="submit_credential" value="Save">
     </form>
     <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
 </div>
