@@ -22,15 +22,19 @@
 </div>
 
 <div>
-    <h1>Total Equity: $ {{ userdata.total_equity }}</h1>
-    <h2>Buying Power: $ {{ userdata.buy_power }}</h2>
+    <h4>Currency: {{userdata.currency}}</h4>
+    <h1>Margin Total Equity: $ {{ userdata.total_equity }}</h1>
+    <h2>Margin Buying Power: $ {{ userdata.buy_power }}</h2>
 </div>
 
 <div class="positions">
-    <h1>Current positions</h1>
+    <h1>Portfolio</h1>
+    <h3>Long Portfolio Value: $ {{userdata.long_portfolio_value}}</h3>
+    <h3>Short Portfolio Value: $ {{userdata.short_portfolio_value}}</h3>
+    <h3>Cash: $ {{userdata.cash}}</h3>
     <ul>
         {% for position in userdata.portfolio %}
-            <li>{{ position.symbol }} - {{ position.qty }} shares</li>
+            <li>{{ position.symbol }} : {{ position.qty }} shares</li>
         {% endfor %}
     </ul>
 
