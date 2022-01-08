@@ -42,8 +42,8 @@ def dashboard(request):
             'portfolio': user_details['portfolio'],
             'cash': user_details['cash'],
             'currency': user_details['currency'],
-            'short_portfolio_value':user_details['short_portfolio_value'],
-            'long_portfolio_value':user_details['long_portfolio_value'],
+            'short_portfolio_value': user_details['short_portfolio_value'],
+            'long_portfolio_value': user_details['long_portfolio_value'],
         }
     # managing forms
     from backend.auth0login.forms import CredentialForm

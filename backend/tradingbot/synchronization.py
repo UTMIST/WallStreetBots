@@ -63,5 +63,7 @@ def sync_alpaca(user):
         instance = StockInstance(stock=stock, portfolio=user.portfolio, quantity=position.qty, user=user)
         instance.save()
 
+    # 3) synchronizes order status (To be completed)
+
     user_details['portfolio'] = portfolio
     return user_details

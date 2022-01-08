@@ -2,6 +2,7 @@ from django import forms
 
 
 class CredentialForm(forms.Form):
+    """credential for user"""
     alpaca_id = forms.CharField(help_text='Your Alpaca ID')
     alpaca_key = forms.CharField(help_text='Your Alpaca Key')
 
@@ -10,3 +11,34 @@ class CredentialForm(forms.Form):
 
     def get_key(self):
         return self.cleaned_data['alpaca_key']
+
+
+class OrderForm(forms.Form):
+    """manual orders from user"""
+    ORDERTYPES = [
+        ('M', 'Market'),
+        # ('L', 'Limit'),
+        # ('S', 'Stop'),
+        # ('ST', 'Stop Limit'),
+        # ('T', 'Trailing Stop'),
+    ]
+    TRANSACTIONTYPES = [
+        ('B', 'Buy'),
+        ('S', 'Sell'),
+    ]
+    ticker = forms.CharField(help_text='Stock ticker')
+    order_type = forms.ChoiceField(choices=ORDERTYPES, help_text='Order Type')
+    transaction_type = forms.ChoiceField(choices=TRANSACTIONTYPES, help_text='Transaction Type')
+    quantity = forms.DecimalField(decimal_places=2, help_text='Quantity')
+
+    def place_order(self, user):
+        ticker = self.cleaned_data['ticker']
+        order_type = self.cleaned_data['order_type']
+        transaction_type = self.cleaned_data['transaction_type']
+        quantity = self.cleaned_data['quantity']
+        # backendAPI
+        # userAPI
+        # 1. check if ticker exists and check current balance
+
+        # 2. place order to Alpaca
+
