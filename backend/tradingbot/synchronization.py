@@ -31,7 +31,7 @@ def sync_alpaca(user):
     # non-user specific synchronization. e.g. add new company, new stock if it didn't exist
     from backend.tradingbot.models import Company, Stock
     for position in portfolio:
-        # print(position)
+        print(position)
         if not Company.objects.filter(ticker=position.symbol).exists():
             # add Company
             company = Company(name=position.symbol, ticker=position.symbol)
