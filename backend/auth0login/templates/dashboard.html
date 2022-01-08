@@ -2,10 +2,15 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'dashboard/style.css' %}">
 <html>
+<style>
+table, th, td {
+  border:1px solid black;
+}
+</style>
 <body>
 <div class="logged-in-box auth0-box logged-in">
     <img class="avatar" src="{{ auth0User.extra_data.picture }}"/>
-    <h2>Welcome {{ user.username }}</h2>
+    <h2> Welcome {{ user.username }} !</h2>
 
     <p> Alpaca ID: {{ userdata.alpaca_id }} <br>
         Alpaca Key: {{ userdata.alpaca_key }}
@@ -22,9 +27,9 @@
 </div>
 
 <div>
-    <h4>Currency: {{userdata.currency}}</h4>
-    <h1>Margin Total Equity: $ {{ userdata.total_equity }}</h1>
+    <h2>Margin Total Equity: $ {{ userdata.total_equity }}</h2>
     <h2>Margin Buying Power: $ {{ userdata.buy_power }}</h2>
+    <h4>Currency: {{userdata.currency}}</h4>
 </div>
 
 <div class="positions">
@@ -32,11 +37,27 @@
     <h3>Long Portfolio Value: $ {{userdata.long_portfolio_value}}</h3>
     <h3>Short Portfolio Value: $ {{userdata.short_portfolio_value}}</h3>
     <h3>Cash: $ {{userdata.cash}}</h3>
-    <ul>
+
+    <table style="width:80%">
+        <tr>
+            <th>Symbol</th>
+            <th>Quantity</th>
+            <th>Current Price</th>
+            <th>Average Entry Price</th>
+            <th>Side</th>
+
+        </tr>
         {% for position in userdata.portfolio %}
-            <li>{{ position.symbol }} : {{ position.qty }} shares</li>
+            <tr>
+                <td style="text-align:center">{{ position.symbol }}    </td>
+                <td style="text-align:center">{{ position.qty }} shares</td>
+                <td style="text-align:center">$ {{ position.current_price }} </td>
+                <td style="text-align:center">$ {{ position.avg_entry_price }} </td>
+                <td style="text-align:center">{{ position.side}} </td>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>
+
 
 </div>
 
