@@ -38,6 +38,10 @@ def dashboard(request):
             'total_equity': user_details['equity'],
             'buy_power': user_details['buy_power'],
             'portfolio': user_details['portfolio'],
+            'cash': user_details['cash'],
+            'currency': user_details['currency'],
+            'short_portfolio_value':user_details['short_portfolio_value'],
+            'long_portfolio_value':user_details['long_portfolio_value'],
         }
 
     # let user input their Alpaca API information
@@ -91,15 +95,18 @@ def sync_alpaca(user):
     account = api.get_account()
     user_details['equity'] = account.equity
     user_details['buy_power'] = account.buying_power
+    user_details['cash'] = account.cash
+    user_details['currency'] = account.currency
+    user_details['long_portfolio_value'] = account.long_market_value
+    user_details['short_portfolio_value'] = account.short_market_value
 
     # get portfolio information
     portfolio = api.get_positions()
-    for position in portfolio:
-        print("{} shares of {}".format(position.qty, position.symbol))
 
     # non-user specific synchronization. e.g. add new company, new stock if it didn't exist
     from backend.tradingbot.models import Company, Stock
     for position in portfolio:
+        print(position)
         if not Company.objects.filter(ticker=position.symbol).exists():
             # add Company
             company = Company(name=position.symbol, ticker=position.symbol)
@@ -109,19 +116,27 @@ def sync_alpaca(user):
             stock.save()
             print(f"added {position.symbol} to Company and Stock")
 
-    print(account)
+    # print(account)
     # user-specific synchronization
-    # 1) check if user has a portfolio
-    """
+    # 1) check if user has a portfolio and update portfolio cash
     if not hasattr(user, 'portfolio'):
         from .models import Portfolio
-        port = Portfolio(user=user, cash=, name='default-1')
+        port = Portfolio(user=user, cash=account.cash, name='default-1')
         port.save()
-    """
-    # 2) update portfolio cash
-    # 3) check if user has stock instance
-    # for position in portfolio:
-    #
+        print("created portfolio default-1 for user")
+    else:
+        user.portfolio.cash = account.cash
+        user.portfolio.save()
+
+    # 2) synchronizes user's stock instances
+    # brute force way to delete and add all new stocks
+    from backend.tradingbot.models import StockInstance, Stock, Company
+    StockInstance.objects.filter(portfolio=user.portfolio).delete()
+    for position in portfolio:
+        company = Company.objects.get(ticker=position.symbol)
+        stock = Stock.objects.get(company=company)
+        instance = StockInstance(stock=stock, portfolio=user.portfolio, quantity=position.qty, user=user)
+        instance.save()
 
     user_details['portfolio'] = portfolio
     return user_details

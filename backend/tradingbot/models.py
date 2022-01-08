@@ -149,14 +149,15 @@ class Portfolio(models.Model):
 
 class StockInstance(models.Model):
     """An instance of a stock"""
+    user = models.ForeignKey(User, help_text='Associated user', on_delete=models.CASCADE)
     portfolio = models.ForeignKey(Portfolio, help_text='Associated portfolio', on_delete=models.CASCADE)
     stock = models.ForeignKey(Stock, help_text='Associated stock', on_delete=models.CASCADE)
     quantity = models.DecimalField(max_digits=8, decimal_places=2, help_text='quantity')
 
     # Metadata
     class Meta:
-        ordering = ['portfolio']
+        ordering = ['user', 'portfolio']
 
     # Methods
     def __str__(self):
-        return f'Stock: {str(self.stock)} \n Quantity: {self.quantity} \n Portfolio: {self.portfolio.name}'
+        return f'User: {str(self.user)} Stock: {str(self.stock)} \n Quantity: {self.quantity} \n Portfolio: {self.portfolio.name}'
