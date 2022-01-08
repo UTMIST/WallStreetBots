@@ -11,9 +11,22 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('user', 'timestamp', 'order_type', 'price', 'quantity')
 
 
+class PortfolioAdmin(admin.ModelAdmin):
+    list_display = ('name', 'user', 'cash')
+
+
+class BotInstanceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'portfolio', 'user', 'bot')
+
+
+class StockInstanceAdmin(admin.ModelAdmin):
+    list_display = ('user', 'portfolio', 'stock', 'quantity')
+
+
+
 # Register your models here.
 admin.site.register(Credential, CredentialAdmin)
 admin.site.register(Order, OrderAdmin)
-admin.site.register(Portfolio)
-admin.site.register(BotInstance)
-admin.site.register(StockInstance)
+admin.site.register(Portfolio, PortfolioAdmin)
+admin.site.register(BotInstance, BotInstanceAdmin)
+admin.site.register(StockInstance, StockInstanceAdmin)

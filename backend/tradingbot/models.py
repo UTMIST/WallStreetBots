@@ -53,8 +53,8 @@ class Stock(models.Model):
     company = models.OneToOneField(Company, help_text='Company', on_delete=models.CASCADE)  # To Be Completed
     current_price = None  # To Be Completed
     indicators = None  # To Be Completed
-    Historical_prices = None  # To Be Completed
-    Historical_volatility = None  # To Be Completed
+    historical_prices = None  # To Be Completed
+    historical_volatility = None  # To Be Completed
 
     # Metadata
     class Meta:
