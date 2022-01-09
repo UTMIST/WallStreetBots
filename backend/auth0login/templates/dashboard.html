@@ -6,59 +6,110 @@
 table, th, td {
   border:1px solid black;
 }
+
+.row {
+  display: -webkit-flex;
+  display: flex;
+}
+
+.column {
+  padding: 10px;
+  height: 300px;
+}
+
+.column.side {
+   -webkit-flex: 1;
+   -ms-flex: 1;
+   flex: 1;
+   border-style: ridge;
+}
+
+
+.column.middle {
+  -webkit-flex: 2;
+  -ms-flex: 2;
+  flex: 2;
+  border-style: ridge;
+}
+
+
+.footer {
+  background-color: #f1f1f1;
+  padding: 10px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .row {
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
+}
+
+
+
 </style>
 <body>
-<div class="logged-in-box auth0-box logged-in">
-    <img class="avatar" src="{{ auth0User.extra_data.picture }}"/>
-    <h2> Welcome {{ user.username }} !</h2>
 
-    <p> Alpaca ID: {{ userdata.alpaca_id }} <br>
-        Alpaca Key: {{ userdata.alpaca_key }}
-    </p>
-    <p>{{ userdata.error }}</p>
-    <form action="" method="post">
-        {% csrf_token %}
-        <table>
-            {{ credential_form.as_table }}
-        </table>
-        <input type="submit" name="submit_credential" value="Save">
-    </form>
-    <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+<div class="logged-in-box auth0-box logged-in" style="display: flex;">
+    <img class="avatar" src="{{ auth0User.extra_data.picture }}"/>
+    <h1 style="padding-left: 80px"> Welcome {{ user.username }} !</h1>
 </div>
 
-<div>
+<div class="row">
+
+
+    <div class="column side">
+
+        <p> Alpaca ID: {{ userdata.alpaca_id }} <br>
+            Alpaca Key: {{ userdata.alpaca_key }}
+        </p>
+        <p>{{ userdata.error }}</p>
+        <form action="" method="post">
+            {% csrf_token %}
+            <table>
+                {{ credential_form.as_table }}
+            </table>
+            <input type="submit" name="submit_credential" value="Save">
+        </form>
+        <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+    </div>
+
+
+
+    <div class="column middle">
+        <h1>Portfolio</h1>
+        <h3>Long Portfolio Value: $ {{userdata.long_portfolio_value}}</h3>
+        <h3>Short Portfolio Value: $ {{userdata.short_portfolio_value}}</h3>
+        <h3>Cash: $ {{userdata.cash}}</h3>
+
+        <table style="width:80%">
+            <tr>
+                <th>Symbol</th>
+                <th>Quantity</th>
+                <th>Current Price</th>
+                <th>Average Entry Price</th>
+                <th>Side</th>
+
+            </tr>
+            {% for position in userdata.portfolio %}
+            <tr>
+                <td style="text-align:center">{{ position.symbol }}</td>
+                <td style="text-align:center">{{ position.qty }} shares</td>
+                <td style="text-align:center">$ {{ position.current_price }}</td>
+                <td style="text-align:center">$ {{ position.avg_entry_price }}</td>
+                <td style="text-align:center">{{ position.side}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+<div class="footer">
     <h2>Margin Total Equity: $ {{ userdata.total_equity }}</h2>
     <h2>Margin Buying Power: $ {{ userdata.buy_power }}</h2>
     <h4>Currency: {{userdata.currency}}</h4>
-</div>
-
-<div class="positions">
-    <h1>Portfolio</h1>
-    <h3>Long Portfolio Value: $ {{userdata.long_portfolio_value}}</h3>
-    <h3>Short Portfolio Value: $ {{userdata.short_portfolio_value}}</h3>
-    <h3>Cash: $ {{userdata.cash}}</h3>
-
-    <table style="width:80%">
-        <tr>
-            <th>Symbol</th>
-            <th>Quantity</th>
-            <th>Current Price</th>
-            <th>Average Entry Price</th>
-            <th>Side</th>
-
-        </tr>
-        {% for position in userdata.portfolio %}
-            <tr>
-                <td style="text-align:center">{{ position.symbol }}    </td>
-                <td style="text-align:center">{{ position.qty }} shares</td>
-                <td style="text-align:center">$ {{ position.current_price }} </td>
-                <td style="text-align:center">$ {{ position.avg_entry_price }} </td>
-                <td style="text-align:center">{{ position.side}} </td>
-            </tr>
-        {% endfor %}
-    </table>
-
-
 </div>
 
 </body>
