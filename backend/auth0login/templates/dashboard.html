@@ -14,7 +14,7 @@ table, th, td {
 
 .column {
   padding: 10px;
-  height: 300px;
+  height: 500px;
 }
 
 .column.side {
@@ -102,6 +102,18 @@ table, th, td {
     <h2>Margin Buying Power: $ {{ userdata.buy_power }}</h2>
     <h4>Currency: {{userdata.currency}}</h4>
 </div>
+
+<div class="order-form">
+    <p>{{ submit_form_response }}</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            {{ order_form.as_table }}
+        </table>
+        <input type="submit" name="submit_order" value="Submit Order">
+    </form>
+</div>
+
 
 </body>
 </html>

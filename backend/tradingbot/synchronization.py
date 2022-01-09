@@ -8,6 +8,25 @@ def validate_backend():
     return backendapi
 
 
+def sync_database_company_stock(ticker):
+    """
+        check if company/stock for this ticker exist and sync to database if not already exists
+        returns the stock and company
+    """
+    from backend.tradingbot.models import Company, Stock
+    if not Company.objects.filter(ticker=ticker).exists():
+        # add Company
+        company = Company(name=ticker, ticker=ticker)
+        company.save()
+        # add Stock
+        stock = Stock(company=company)
+        stock.save()
+        print(f"added {ticker} to Company and Stock")
+    else:
+        company = Company.objects.get(ticker=ticker)
+        stock = Stock.objects.get(company=company)
+    return stock, company
+
 def sync_alpaca(user):
     """
         sync user related database data with Alpaca
@@ -39,17 +58,9 @@ def sync_alpaca(user):
     portfolio = api.get_positions()
 
     # non-user specific synchronization. e.g. add new company, new stock if it didn't exist
-    from backend.tradingbot.models import Company, Stock
     for position in portfolio:
         # print(position)
-        if not Company.objects.filter(ticker=position.symbol).exists():
-            # add Company
-            company = Company(name=position.symbol, ticker=position.symbol)
-            company.save()
-            # add Stock
-            stock = Stock(company=company)
-            stock.save()
-            print(f"added {position.symbol} to Company and Stock")
+        sync_database_company_stock(position.symbol)
 
     # print(account)
     # user-specific synchronization

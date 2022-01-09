@@ -121,7 +121,7 @@ class AlpacaManager():  # API manager for Alpaca
         except Exception as e:
             return "Failed to access portfolio: " + str(e)
 
-    def market_buy(self, symbol, qty):
+    def market_buy(self, symbol, qty, client_order_id=None):
         """
         Buy the stocks specified
 
@@ -132,13 +132,23 @@ class AlpacaManager():  # API manager for Alpaca
         Returns:
 
         """
-        res = self.api.submit_order(
-            symbol=symbol,
-            qty=qty,
-            side='buy',
-            type='market',
-            time_in_force='gtc'
-        )
+        if client_order_id is not None:
+            res = self.api.submit_order(
+                symbol=symbol,
+                qty=qty,
+                side='buy',
+                type='market',
+                time_in_force='gtc',
+                client_order_id=client_order_id
+            )
+        else:
+            res = self.api.submit_order(
+                symbol=symbol,
+                qty=qty,
+                side='buy',
+                type='market',
+                time_in_force='gtc'
+            )
         if res.status == HTTPStatus.FORBIDDEN:
             print("Insufficient funds")
             return False
@@ -147,7 +157,7 @@ class AlpacaManager():  # API manager for Alpaca
             return False
         return True
 
-    def market_sell(self, symbol, qty):
+    def market_sell(self, symbol, qty, client_order_id=None):
         """
         Sell the stock specified
 
@@ -159,15 +169,27 @@ class AlpacaManager():  # API manager for Alpaca
           N/A
 
         """
-        try:
-            self.api.submit_order(
+        if client_order_id is not None:
+            res = self.api.submit_order(
+                symbol=symbol,
+                qty=qty,
+                side='sell',
+                type='market',
+                time_in_force='gtc',
+                client_order_id=client_order_id
+            )
+        else:
+            res = self.api.submit_order(
                 symbol=symbol,
                 qty=qty,
                 side='sell',
                 type='market',
                 time_in_force='gtc'
             )
-            log = 'Success to market sell'
-        except Exception as e:
-            log = 'Failed to market sell: ' + str(e)
-        return log
+        if res.status == HTTPStatus.FORBIDDEN:
+            print("Insufficient quantity")
+            return False
+        if res.status == HTTPStatus.UNPROCESSABLE_ENTITY:
+            print("Malformed request")
+            return False
+        return True

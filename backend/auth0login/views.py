@@ -46,8 +46,9 @@ def dashboard(request):
             'long_portfolio_value': user_details['long_portfolio_value'],
         }
     # managing forms
-    from backend.auth0login.forms import CredentialForm
+    from backend.auth0login.forms import CredentialForm, OrderForm
     credential_form = CredentialForm(request.POST or None)
+    order_form = OrderForm(request.POST or None)
     if request.method == 'POST':
         # let user input their Alpaca API information
         if 'submit_credential' in request.POST:
@@ -63,12 +64,22 @@ def dashboard(request):
                 return HttpResponseRedirect('/')
 
         if 'submit_order' in request.POST:
-            pass
+            if order_form.is_valid():
+                response = order_form.place_order(user, user_details)
+                order_form = OrderForm()
+                return render(request, 'dashboard.html', {
+                    'credential_form': credential_form,
+                    'order_form': order_form,
+                    'auth0User': auth0user,
+                    'userdata': userdata,
+                    'submit_form_response': response,
+                })
 
     return render(request, 'dashboard.html', {
         'credential_form': credential_form,
+        'order_form': order_form,
         'auth0User': auth0user,
-        'userdata': userdata
+        'userdata': userdata,
     })
 
 
