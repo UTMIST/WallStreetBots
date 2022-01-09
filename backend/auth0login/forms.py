@@ -31,14 +31,17 @@ class OrderForm(forms.Form):
     transaction_type = forms.ChoiceField(choices=TRANSACTIONTYPES, help_text='Transaction Type')
     quantity = forms.DecimalField(decimal_places=2, help_text='Quantity')
 
-    def place_order(self, user):
-        ticker = self.cleaned_data['ticker']
+    def clean_data(self, user):
+        ticker = self.cleaned_data['ticker'].upper()
         order_type = self.cleaned_data['order_type']
         transaction_type = self.cleaned_data['transaction_type']
         quantity = self.cleaned_data['quantity']
-        # backendAPI
-        # userAPI
-        # 1. check if ticker exists and check current balance
-
-        # 2. place order to Alpaca
+        from backend.tradingbot.synchronization import validate_backend, sync_alpaca
+        from django.core.exceptions import ValidationError
+        backendapi = validate_backend()
+        # check if the ticker exists
+        check, price = backendapi.get_price('ticker')
+        if not check:
+            raise ValidationError(_(f'Failed to get price for {ticker}, are you sure that the ticker name is correct?'))
+        return ticker, order_type, transaction_type, quantity
 

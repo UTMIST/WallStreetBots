@@ -160,3 +160,5 @@ AUTHENTICATION_BACKENDS = {
 }
 LOGIN_URL = '/login/auth0'
 LOGIN_REDIRECT_URL = '/dashboard'
+BACKEND_ALPACA_ID = os.environ.get('ALPACA_ID')
+BACKEND_ALPACA_KEY = os.environ.get('ALPACA_SECRET_KEY')

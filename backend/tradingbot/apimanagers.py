@@ -65,9 +65,9 @@ class AlpacaManager():  # API manager for Alpaca
         try:
             bar = self.api.get_last_trade(symbol)
             price = bar._raw['price']
-            return price
+            return True, price
         except Exception as e:
-            return "Failed to get price from Alpaca: " + str(e)
+            return False, "Failed to get price from Alpaca: " + str(e)
 
     def market_close(self):
         """
