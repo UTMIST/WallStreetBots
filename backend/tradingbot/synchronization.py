@@ -1,3 +1,6 @@
+from alpaca_trade_api.rest import APIError
+
+
 def validate_backend():
     from backend.settings import BACKEND_ALPACA_ID, BACKEND_ALPACA_KEY
     from backend.tradingbot.apimanagers import AlpacaManager
@@ -87,7 +90,7 @@ def sync_alpaca(user):
                 alpaca_order = api.api.get_order_by_client_order_id(client_order_id)
             else:
                 alpaca_order = api.api.get_order_by_client_order_id(order.client_order_id)
-        except:
+        except APIError:
             print(f"Order ID {client_order_id} deleted as no matching order found in Alpaca")
             order.delete()
             continue
@@ -111,14 +114,17 @@ def sync_alpaca(user):
             # print(f"{order.symbol}, {price}")
             usable_cash -= float(price) * float(order.qty)
         # sync open orders to database if not already exist
-        if not order.client_order_id.isnumeric() or not Order.objects.filter(user=user, order_number=order.client_order_id).exists():
+        if not order.client_order_id.isnumeric() or not Order.objects.filter(user=user,
+                                                                             order_number=order.client_order_id).exists():
             if not Order.objects.filter(user=user, client_order_id=order.client_order_id).exists():
                 create_local_order(user=user, ticker=order.symbol, quantity=float(order.qty),
-                                   order_type=order.order_type, transaction_type=order.side, status="A", client_order_id=order.client_order_id)
+                                   order_type=order.order_type, transaction_type=order.side, status="A",
+                                   client_order_id=order.client_order_id)
 
     user_details['usable_cash'] = str(usable_cash)
     user_details['portfolio'] = portfolio
-    user_details['orders'] = [order.display_order() for order in Order.objects.filter(user=user).order_by('-timestamp').iterator()]
+    user_details['orders'] = [order.display_order() for order in
+                              Order.objects.filter(user=user).order_by('-timestamp').iterator()]
 
     # 3) check if user has a portfolio and update portfolio cash
     if not hasattr(user, 'portfolio'):

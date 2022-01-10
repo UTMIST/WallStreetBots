@@ -1,9 +1,11 @@
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APITestCase
-from .models import Company, StockTrade
-from .apimanagers import AlpacaManager
+# from django.urls import reverse
+# from rest_framework import status
+# from rest_framework.test import APITestCase
+# from .models import Company, StockTrade
 import unittest
+
+from .apimanagers import AlpacaManager
+
 
 class AlpacaManagerTests(unittest.TestCase):
     def test_get_stock_price(self):

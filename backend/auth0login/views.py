@@ -61,7 +61,8 @@ def dashboard(request):
                     user.credential.save()
                 else:
                     from .models import Credential
-                    cred = Credential(user=request.user, alpaca_id=credential_form.get_id(), alpaca_key=credential_form.get_key())
+                    cred = Credential(user=request.user, alpaca_id=credential_form.get_id(),
+                                      alpaca_key=credential_form.get_key())
                     cred.save()
                 return HttpResponseRedirect('/')
 
@@ -71,7 +72,8 @@ def dashboard(request):
                 order_form = OrderForm()
                 #  update order for display
                 from backend.tradingbot.models import Order
-                userdata["orders"] = [order.display_order() for order in Order.objects.filter(user=user).order_by('-timestamp').iterator()]
+                userdata["orders"] = [order.display_order() for order in
+                                      Order.objects.filter(user=user).order_by('-timestamp').iterator()]
                 return render(request, 'dashboard.html', {
                     'credential_form': credential_form,
                     'order_form': order_form,

@@ -124,11 +124,13 @@ class Order(models.Model):
     stock = models.ForeignKey(Stock, help_text='associated stock', on_delete=models.CASCADE)
     order_type = models.CharField(choices=ORDERTYPES, max_length=2, help_text='order type')
     quantity = models.DecimalField(max_digits=8, decimal_places=2, help_text='quantity')
-    transaction_type = models.CharField(choices=TRANSACTIONTYPES, max_length=2, help_text='buy or sell transaction type')
+    transaction_type = models.CharField(choices=TRANSACTIONTYPES, max_length=2,
+                                        help_text='buy or sell transaction type')
     status = models.CharField(choices=STATUS, max_length=1, help_text='order status')
 
     # Not required
-    filled_avg_price = models.DecimalField(max_digits=8, decimal_places=2, help_text='filled average price', blank=True, null=True)
+    filled_avg_price = models.DecimalField(max_digits=8, decimal_places=2, help_text='filled average price', blank=True,
+                                           null=True)
     filled_timestamp = models.DateTimeField(blank=True, help_text='order filled timestamp', null=True)
     limit_price = models.DecimalField(max_digits=8, decimal_places=2, help_text='limit price', blank=True, null=True)
     stop_price = models.DecimalField(max_digits=8, decimal_places=2, help_text='stop price', blank=True, null=True)
