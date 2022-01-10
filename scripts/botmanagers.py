@@ -6,7 +6,8 @@ class StocksManagerNaive:
 
     def make_decision(self):
         '''
-        Creates a dictionary of stock name as key and number of stock to buy or sell as values, based on the decisions of the bots.
+        Creates a dictionary of stock name as key and number of stock to buy or sell as values,
+        based on the decisions of the bots.
         Note postive number denotes buying and negative number denotes selling
         '''
         action_dict = {}  # e.g. {"APPL": 10}

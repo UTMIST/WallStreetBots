@@ -1,6 +1,7 @@
-from backend.tradingbot.synchronization import validate_backend, sync_database_company_stock
-from backend.tradingbot.apimanagers import AlpacaManager
 from django.core.exceptions import ValidationError
+
+from backend.tradingbot.apimanagers import AlpacaManager
+from backend.tradingbot.synchronization import validate_backend, sync_database_company_stock
 
 
 def create_local_order(user, ticker, quantity, order_type, transaction_type, status, client_order_id=''):
@@ -50,30 +51,14 @@ def place_general_order(user, user_details, ticker, quantity, transaction_type, 
         raise ValidationError(f'Failed to get price for {ticker}, are you sure that the ticker name is correct?')
     if transaction_type == 'B':
         a_transaction_type = 'buy'
-        if order_type == 'M':
-            a_order_type = 'market'
-            if float(price) * float(quantity) > float(user_details['usable_cash']):
-                raise ValidationError('Not enough cash to perform this operation. Marginal trading is not supported.')
-        elif order_type == 'L':
-            pass
-        elif order_type == 'S':
-            pass
-        elif order_type == 'ST':
-            pass
-        elif order_type == 'T':
-            pass
-    else:  # transaction_type == 'S'
+        a_order_type = buy_order_check(order_type=order_type, price=price, quantity=quantity,
+                                       usable_cash=user_details['usable_cash'])
+    elif transaction_type == 'S':
         a_transaction_type = 'sell'
-        if order_type == 'M':
-            a_order_type = 'market'
-        elif order_type == 'L':
-            pass
-        elif order_type == 'S':
-            pass
-        elif order_type == 'ST':
-            pass
-        elif order_type == 'T':
-            pass
+        a_order_type = sell_order_check(order_type=order_type, price=price, quantity=quantity,
+                                        usable_cash=user_details['usable_cash'])
+    else:
+        raise ValidationError("invalid transaction type")
 
     # 2. store order to database
     # 2.1 check if stock and company exists
@@ -100,3 +85,35 @@ def place_general_order(user, user_details, ticker, quantity, transaction_type, 
         raise ValidationError(e)
 
     return True
+
+
+def buy_order_check(order_type, price, quantity, usable_cash):
+    a_order_type = ''
+    if order_type == 'M':
+        a_order_type = 'market'
+        if float(price) * float(quantity) > float(usable_cash):
+            raise ValidationError('Not enough cash to perform this operation. Marginal trading is not supported.')
+    elif order_type == 'L':
+        pass
+    elif order_type == 'S':
+        pass
+    elif order_type == 'ST':
+        pass
+    elif order_type == 'T':
+        pass
+    return a_order_type
+
+
+def sell_order_check(order_type, price, quantity, usable_cash):
+    a_order_type = ''
+    if order_type == 'M':
+        a_order_type = 'market'
+    elif order_type == 'L':
+        pass
+    elif order_type == 'S':
+        pass
+    elif order_type == 'ST':
+        pass
+    elif order_type == 'T':
+        pass
+    return a_order_type

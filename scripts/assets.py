@@ -77,7 +77,7 @@ class Stock:
     def ccvol(self, start, days, arr):
         sum_vol = 0
         var_days = []
-        var = 0;
+        var = 0
         for i in range(days):
             if (i + start) != 0:
                 var_days.append(math.log(arr[i + start] / arr[start + i - 1]))
@@ -89,10 +89,10 @@ class Stock:
 
     def plot_price(self, past_pts=15):
 
-        ma_prices10 = [self.moving_average(i) for i in range(0, past_pts)][::-1]
+        #  ma_prices10 = [self.moving_average(i) for i in range(0, past_pts)][::-1]
         ema_prices12 = [self.EMA(12, price, self.past_price[i + 1:]) for i, price in
                         enumerate(np.insert(self.past_price, 0, self.cur_price)[:past_pts])][::-1]
-        ma_prices5 = [self.moving_average(i, 5) for i in range(0, past_pts)][::-1]
+        #  ma_prices5 = [self.moving_average(i, 5) for i in range(0, past_pts)][::-1]
         ema_prices26 = [self.EMA(26, price, self.past_price[i + 1:]) for i, price in
                         enumerate(np.insert(self.past_price, 0, self.cur_price)[:past_pts])][::-1]
         plt.clf()
