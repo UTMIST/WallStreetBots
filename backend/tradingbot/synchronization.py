@@ -85,6 +85,6 @@ def sync_alpaca(user):
         instance.save()
 
     # 3) synchronizes order status (To be completed)
-
+    user_details['usable_cash'] = account.cash  # usable cash is calculated after sync order, which is not implemented yet.
     user_details['portfolio'] = portfolio
     return user_details

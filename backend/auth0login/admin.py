@@ -8,7 +8,7 @@ class CredentialAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('user', 'timestamp', 'order_type', 'filled_avg_price', 'quantity')
+    list_display = ('user', 'timestamp', 'stock', 'order_type', 'filled_avg_price', 'quantity')
 
 
 class PortfolioAdmin(admin.ModelAdmin):

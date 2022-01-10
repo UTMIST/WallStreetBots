@@ -141,7 +141,7 @@ class Order(models.Model):
     def __str__(self):
         return f"Order {self.order_number} \n User: {self.user} \n" \
                f"Timestamp: {self.timestamp} \n Company: {str(self.stock)}" \
-               f"Order type: {self.order_type} \n Price: {self.price} \n Quantity: {self.quantity}"
+               f"Order type: {self.order_type} \n Price: {self.filled_avg_price} \n Quantity: {self.quantity}"
 
 
 class Portfolio(models.Model):
