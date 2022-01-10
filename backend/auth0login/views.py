@@ -41,9 +41,11 @@ def dashboard(request):
             'buy_power': user_details['buy_power'],
             'portfolio': user_details['portfolio'],
             'cash': user_details['cash'],
+            'tradable_cash': user_details['usable_cash'],
             'currency': user_details['currency'],
             'short_portfolio_value': user_details['short_portfolio_value'],
             'long_portfolio_value': user_details['long_portfolio_value'],
+            'orders': user_details['orders'],
         }
     # managing forms
     from backend.auth0login.forms import CredentialForm, OrderForm

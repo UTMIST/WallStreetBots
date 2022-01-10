@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+
 def validate_backend():
     from backend.settings import BACKEND_ALPACA_ID, BACKEND_ALPACA_KEY
     from backend.tradingbot.apimanagers import AlpacaManager
@@ -85,6 +87,42 @@ def sync_alpaca(user):
         instance.save()
 
     # 3) synchronizes order status (To be completed)
-    user_details['usable_cash'] = account.cash  # usable cash is calculated after sync order, which is not implemented yet.
+    alpaca_open_orders = api.api.list_orders(status='open', nested=True)
+    from backend.tradingbot.models import Order
+    from backend.tradingbot.apiutility import create_local_order
+    local_open_orders = Order.objects.filter(status='A')
+    for order in local_open_orders.iterator():
+        client_order_id = str(order.order_number)
+        try:
+            if order.client_order_id == '':
+                alpaca_order = api.api.get_order_by_client_order_id(client_order_id)
+            else:
+                alpaca_order = api.api.get_order_by_client_order_id(order.client_order_id)
+            if alpaca_order.status == 'accepted':
+                order.status = 'A'
+            elif alpaca_order.status == 'filled':
+                order.status = 'F'
+            else:
+                order.status = 'C'
+            order.save()
+        except:
+            print(f"Order ID {client_order_id} deleted as no matching order found in Alpaca")
+            order.delete()
+    usable_cash = float(account.cash)
+    for order in alpaca_open_orders:
+        # get usable trading cash
+        if order.order_type == 'market' and order.side == 'buy':
+            backendapi = validate_backend()
+            _, price = backendapi.get_price(order.symbol)
+            # print(f"{order.symbol}, {price}")
+            usable_cash -= float(price) * float(order.qty)
+        # sync open orders to database if not already exist
+        if not order.client_order_id.isnumeric() or not Order.objects.filter(order_number=order.client_order_id).exists():
+            if not Order.objects.filter(client_order_id=order.client_order_id).exists():
+                create_local_order(user=user, ticker=order.symbol, quantity=float(order.qty),
+                                   order_type=order.order_type, transaction_type=order.side, status="A", client_order_id=order.client_order_id)
+
+    user_details['usable_cash'] = str(usable_cash)
     user_details['portfolio'] = portfolio
+    user_details['orders'] = [order.display_order() for order in Order.objects.all().iterator()]
     return user_details

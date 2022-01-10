@@ -45,7 +45,7 @@ class Company(models.Model):
 
     # Methods
     def __str__(self):
-        return f'Name: {str(self.name)} \n Ticker: {self.ticker}'
+        return f'{self.ticker}'
 
 
 class Stock(models.Model):
@@ -114,10 +114,11 @@ class Order(models.Model):
     STATUS = [
         ('A', 'Accepted'),
         ('F', 'Filled'),
-        ('C', 'Cancelled')
+        ('C', 'Closed')
     ]
     # Fields
     order_number = models.BigAutoField(primary_key=True)
+    client_order_id = models.CharField(max_length=100, default='', help_text='for alpaca sync')
     user = models.ForeignKey(User, help_text='associated user', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True, help_text='order submission timestamp')
     stock = models.ForeignKey(Stock, help_text='associated stock', on_delete=models.CASCADE)
@@ -142,6 +143,25 @@ class Order(models.Model):
         return f"Order {self.order_number} \n User: {self.user} \n" \
                f"Timestamp: {self.timestamp} \n Company: {str(self.stock)}" \
                f"Order type: {self.order_type} \n Price: {self.filled_avg_price} \n Quantity: {self.quantity}"
+
+    def display_order(self):
+        ret = {
+            'stock': str(self.stock),
+            'quantity': str(self.quantity),
+            'type': f'{mapping(str(self.order_type), Order.ORDERTYPES)} '
+                    f'{mapping(str(self.transaction_type), Order.TRANSACTIONTYPES)}',
+            'timestamp': str(self.timestamp),
+            'filled_quantity': str(self.filled_quantity),
+            'filled_avg_price': str(self.filled_avg_price),
+            'status': mapping(str(self.status), Order.STATUS),
+        }
+        return ret
+
+
+def mapping(key, choices):
+    for row in choices:
+        if row[0] == key:
+            return row[1]
 
 
 class Portfolio(models.Model):

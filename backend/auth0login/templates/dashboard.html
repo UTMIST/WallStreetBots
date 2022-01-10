@@ -51,7 +51,7 @@ table, th, td {
 
 
     <div class="column side">
-
+        <h1>My Account</h1>
         <p> Alpaca ID: {{ userdata.alpaca_id }} <br>
             Alpaca Key: {{ userdata.alpaca_key }}
         </p>
@@ -69,10 +69,10 @@ table, th, td {
 
 
     <div class="column middle">
-        <h1>Portfolio</h1>
+        <h1>My Portfolio</h1>
         <h3>Long Portfolio Value: $ {{userdata.long_portfolio_value}}</h3>
         <h3>Short Portfolio Value: $ {{userdata.short_portfolio_value}}</h3>
-        <h3>Cash: $ {{userdata.cash}}</h3>
+        <h3>Cash: $ {{userdata.cash}} ($ {{userdata.tradable_cash}} tradable)</h3>
 
         <table style="width:80%">
             <tr>
@@ -98,13 +98,13 @@ table, th, td {
 </div>
 
 <div class="footer">
-    <h2>Margin Total Equity: $ {{ userdata.total_equity }}</h2>
-    <h2>Margin Buying Power: $ {{ userdata.buy_power }}</h2>
+    <h2>Total Equity: $ {{ userdata.total_equity }}</h2>
+    <h2>Marginal Buying Power: $ {{ userdata.buy_power }}</h2>
     <h4>Currency: {{userdata.currency}}</h4>
 </div>
 
 <div class="order-form">
-    <p>{{ submit_form_response }}</p>
+    <h1>Place Order</h1>
     <form action="" method="post">
         {% csrf_token %}
         <table>
@@ -114,6 +114,33 @@ table, th, td {
     </form>
 </div>
 
+<div class="order table">
+        <h1>My Order History</h1>
+
+        <table style="width:80%">
+            <tr>
+                <th>Symbol</th>
+                <th>Quantity</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Filled Quantity</th>
+                <th>Average Filled Price</th>
+                <th>Status</th>
+
+            </tr>
+            {% for order in userdata.orders %}
+            <tr>
+                <td style="text-align:center">{{ order.stock }}</td>
+                <td style="text-align:center">{{ order.quantity }} shares</td>
+                <td style="text-align:center">{{ order.type}}</td>
+                <td style="text-align:center">{{ order.timestamp }}</td>
+                <td style="text-align:center">{{ order.filled_quantity}}</td>
+                <td style="text-align:center"> $ {{ order.filled_avg_price}}</td>
+                <td style="text-align:center">{{ order.status}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+</div>
 
 </body>
 </html>

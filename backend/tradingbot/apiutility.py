@@ -3,6 +3,26 @@ from backend.tradingbot.apimanagers import AlpacaManager
 from django.core.exceptions import ValidationError
 
 
+def create_local_order(user, ticker, quantity, order_type, transaction_type, status, client_order_id=''):
+    if transaction_type == 'buy':
+        transaction_type = 'B'
+    elif transaction_type == 'sell':
+        transaction_type = 'S'
+    else:
+        raise ValidationError("invalid transaction type")
+    if order_type == 'market':
+        order_type = 'M'
+    else:
+        raise ValidationError("invalid order type")
+
+    stock, _ = sync_database_company_stock(ticker)
+    from backend.tradingbot.models import Order
+    order = Order(user=user, stock=stock, order_type=order_type,
+                  quantity=quantity, transaction_type=transaction_type,
+                  status=status, client_order_id=client_order_id)
+    order.save()
+
+
 def place_general_order(user, user_details, ticker, quantity, transaction_type, order_type):
     """
     General place order function that takes account of database, margin, and alpaca synchronization.
