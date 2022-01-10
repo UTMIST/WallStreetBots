@@ -106,7 +106,7 @@ def sync_alpaca(user):
         elif alpaca_order.status == 'filled':
             order.status = 'F'
             order.filled_avg_price = float(alpaca_order.filled_avg_price)
-            order.filled_timestamp = alpaca_order.filled_at
+            order.filled_timestamp = alpaca_order.filled_at.to_pydatetime()
             order.filled_quantity = float(alpaca_order.filled_qty)
         else:
             order.status = 'C'
