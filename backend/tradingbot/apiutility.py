@@ -24,7 +24,7 @@ def create_local_order(user, ticker, quantity, order_type, transaction_type, sta
     order.save()
 
 
-def place_general_order(user, user_details, ticker, quantity, transaction_type, order_type):
+def place_general_order(user, user_details, ticker, quantity, transaction_type, order_type, time_in_force):
     """
     General place order function that takes account of database, margin, and alpaca synchronization.
     supports market buy/sell
@@ -76,7 +76,7 @@ def place_general_order(user, user_details, ticker, quantity, transaction_type, 
             qty=float(quantity),
             side=a_transaction_type,
             type=a_order_type,
-            time_in_force='gtc',
+            time_in_force=time_in_force,
             client_order_id=str(client_order_id)
         )
     except Exception as e:
