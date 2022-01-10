@@ -195,4 +195,5 @@ class StockInstance(models.Model):
 
     # Methods
     def __str__(self):
-        return f'User: {str(self.user)} Stock: {str(self.stock)} \n Quantity: {self.quantity} \n Portfolio: {self.portfolio.name}'
+        return f'User: {str(self.user)} Stock: {str(self.stock)} \n Quantity: {self.quantity} \n ' \
+               f'Portfolio: {self.portfolio.name}'

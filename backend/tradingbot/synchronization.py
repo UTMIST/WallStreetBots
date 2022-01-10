@@ -31,7 +31,7 @@ def sync_database_company_stock(ticker):
     return stock, company
 
 
-def sync_alpaca(user):
+def sync_alpaca(user):  # noqa: C901
     """
         sync user related database data with Alpaca
         this is a simplified, incomplete version.
