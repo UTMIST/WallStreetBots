@@ -105,6 +105,7 @@ table, th, td {
 
 <div class="order-form">
     <h1>Place Order</h1>
+    <p>{{ order_submit_form_response }}</p>
     <form action="" method="post">
         {% csrf_token %}
         <table>
@@ -122,7 +123,7 @@ table, th, td {
                 <th>Symbol</th>
                 <th>Quantity</th>
                 <th>Type</th>
-                <th>Date</th>
+                <th>Creation Date</th>
                 <th>Filled Quantity</th>
                 <th>Average Filled Price</th>
                 <th>Status</th>

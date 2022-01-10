@@ -69,12 +69,15 @@ def dashboard(request):
             if order_form.is_valid():
                 response = order_form.place_order(user, user_details)
                 order_form = OrderForm()
+                #  update order for display
+                from backend.tradingbot.models import Order
+                userdata["orders"] = [order.display_order() for order in Order.objects.filter(user=user).order_by('-timestamp').iterator()]
                 return render(request, 'dashboard.html', {
                     'credential_form': credential_form,
                     'order_form': order_form,
                     'auth0User': auth0user,
                     'userdata': userdata,
-                    'submit_form_response': response,
+                    'order_submit_form_response': response,
                 })
 
     return render(request, 'dashboard.html', {
