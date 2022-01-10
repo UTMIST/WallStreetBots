@@ -65,17 +65,7 @@ def sync_alpaca(user):
 
     # print(account)
     # user-specific synchronization
-    # 1) check if user has a portfolio and update portfolio cash
-    if not hasattr(user, 'portfolio'):
-        from .models import Portfolio
-        port = Portfolio(user=user, cash=account.cash, name='default-1')
-        port.save()
-        print("created portfolio default-1 for user")
-    else:
-        user.portfolio.cash = account.cash
-        user.portfolio.save()
-
-    # 2) synchronizes user's stock instances
+    # 1) synchronizes user's stock instances
     # brute force way to delete and add all new stocks
     from backend.tradingbot.models import StockInstance, Stock, Company
     StockInstance.objects.filter(user=user, portfolio=user.portfolio).delete()
@@ -85,7 +75,7 @@ def sync_alpaca(user):
         instance = StockInstance(stock=stock, portfolio=user.portfolio, quantity=position.qty, user=user)
         instance.save()
 
-    # 3) synchronizes order status (To be completed)
+    # 2) synchronizes order status (To be completed)
     alpaca_open_orders = api.api.list_orders(status='open', nested=True)
     from backend.tradingbot.models import Order
     from backend.tradingbot.apiutility import create_local_order
@@ -129,4 +119,15 @@ def sync_alpaca(user):
     user_details['usable_cash'] = str(usable_cash)
     user_details['portfolio'] = portfolio
     user_details['orders'] = [order.display_order() for order in Order.objects.filter(user=user).order_by('-timestamp').iterator()]
+
+    # 3) check if user has a portfolio and update portfolio cash
+    if not hasattr(user, 'portfolio'):
+        from .models import Portfolio
+        port = Portfolio(user=user, cash=float(user_details['usable_cash']), name='default-1')
+        port.save()
+        print("created portfolio default-1 for user")
+    else:
+        user.portfolio.cash = float(user_details['usable_cash'])
+        user.portfolio.save()
+
     return user_details
