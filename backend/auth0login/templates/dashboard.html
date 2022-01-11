@@ -36,9 +36,14 @@ table, th, td {
 
 .footer {
   background-color: #f1f1f1;
-  padding: 10px;
+  padding: 20px;
   text-align: center;
 }
+
+
+
+
+
 
 </style>
 
@@ -66,6 +71,9 @@ table, th, td {
             <input type="submit" name="submit_credential" value="Save">
         </form>
         <a class="btn btn-primary btn-lg btn-logout btn-block" href="/logout">Logout</a>
+        <h2>Total Equity: $ {{ userdata.total_equity }}</h2>
+        <h2>Marginal Buying Power: $ {{ userdata.buy_power }}</h2>
+        <h2>Currency: {{userdata.currency}}</h2>
     </div>
 
 
@@ -107,11 +115,6 @@ table, th, td {
 
 </div>
 
-<div class="footer">
-    <h2>Total Equity: $ {{ userdata.total_equity }}</h2>
-    <h2>Marginal Buying Power: $ {{ userdata.buy_power }}</h2>
-    <h4>Currency: {{userdata.currency}}</h4>
-</div>
 
 <div class="order-form">
     <h1>Place Order</h1>
@@ -153,5 +156,8 @@ table, th, td {
     </table>
 </div>
 
+<div class="footer">
+    <p>made by UTMIST/WallStreetBots Team, 2021-2022</p>
+</div>
 </body>
 </html>
