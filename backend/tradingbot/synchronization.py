@@ -135,5 +135,9 @@ def sync_alpaca(user):  # noqa: C901
     else:
         user.portfolio.cash = float(user_details['usable_cash'])
         user.portfolio.save()
+    user_details['strategy'] = {
+        'rebalance': user.portfolio.rebalancing_strategy,
+        'optimization': user.portfolio.optimization_strategy,
+    }
 
     return user_details

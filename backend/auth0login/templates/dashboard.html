@@ -2,6 +2,7 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'dashboard/style.css' %}">
 <html>
+
 <style>
 table, th, td {
   border:1px solid black;
@@ -14,7 +15,7 @@ table, th, td {
 
 .column {
   padding: 10px;
-  height: 500px;
+  height: 700px;
 }
 
 .column.side {
@@ -40,6 +41,7 @@ table, th, td {
 }
 
 </style>
+
 <body>
 
 <div class="logged-in-box auth0-box logged-in" style="display: flex;">
@@ -67,7 +69,6 @@ table, th, td {
     </div>
 
 
-
     <div class="column middle">
         <h1>My Portfolio</h1>
         <h3>Long Portfolio Value: $ {{userdata.long_portfolio_value}}</h3>
@@ -81,7 +82,6 @@ table, th, td {
                 <th>Current Price</th>
                 <th>Average Entry Price</th>
                 <th>Side</th>
-
             </tr>
             {% for position in userdata.portfolio %}
             <tr>
@@ -93,6 +93,16 @@ table, th, td {
             </tr>
             {% endfor %}
         </table>
+        <h3>Current Strategy:</h3>
+        <p>Rebalancing Strategy: {{userdata.strategy.rebalance}}</p>
+        <p>Optimization Strategy: {{userdata.strategy.optimization}}</p>
+        <form action="" method="post">
+            {% csrf_token %}
+            <table>
+                {{ strategy_form.as_table }}
+            </table>
+            <input type="submit" name="submit_strategy" value="Update">
+        </form>
     </div>
 
 </div>
@@ -116,31 +126,31 @@ table, th, td {
 </div>
 
 <div class="order table">
-        <h1>My Order History</h1>
+    <h1>My Order History</h1>
 
-        <table style="width:80%">
-            <tr>
-                <th>Symbol</th>
-                <th>Quantity</th>
-                <th>Type</th>
-                <th>Creation Date</th>
-                <th>Filled Quantity</th>
-                <th>Average Filled Price</th>
-                <th>Status</th>
+    <table style="width:80%">
+        <tr>
+            <th>Symbol</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Creation Date</th>
+            <th>Filled Quantity</th>
+            <th>Average Filled Price</th>
+            <th>Status</th>
 
-            </tr>
-            {% for order in userdata.orders %}
-            <tr>
-                <td style="text-align:center">{{ order.stock }}</td>
-                <td style="text-align:center">{{ order.quantity }} shares</td>
-                <td style="text-align:center">{{ order.type}}</td>
-                <td style="text-align:center">{{ order.timestamp }}</td>
-                <td style="text-align:center">{{ order.filled_quantity}}</td>
-                <td style="text-align:center"> $ {{ order.filled_avg_price}}</td>
-                <td style="text-align:center">{{ order.status}}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        </tr>
+        {% for order in userdata.orders %}
+        <tr>
+            <td style="text-align:center">{{ order.stock }}</td>
+            <td style="text-align:center">{{ order.quantity }} shares</td>
+            <td style="text-align:center">{{ order.type}}</td>
+            <td style="text-align:center">{{ order.timestamp }}</td>
+            <td style="text-align:center">{{ order.filled_quantity}}</td>
+            <td style="text-align:center"> $ {{ order.filled_avg_price}}</td>
+            <td style="text-align:center">{{ order.status}}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 
 </body>

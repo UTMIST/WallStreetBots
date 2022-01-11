@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 
 class CredentialForm(forms.Form):
@@ -55,9 +56,22 @@ class OrderForm(forms.Form):
 class StrategyForm(forms.Form):
     BALANCINGSTRATEGY = [
         ('manual', 'Manual portfolio management'),
-        ('monte_carlo', 'Monte carlo portfolio rebalancing'),
+        ('monte_carlo', 'Monte Carlo portfolio rebalancing'),
     ]
     OPTIMIZATIONSTRATEGY = [
         ('none', 'None'),
         ('ma_sharp_ratio', 'Sharp ratio based on moving average'),
     ]
+    rebalancing_strategy = forms.ChoiceField(choices=BALANCINGSTRATEGY, help_text='Portfolio Rebalancing Strategy')
+    optimization_strategy = forms.ChoiceField(choices=OPTIMIZATIONSTRATEGY, help_text='Optimization Strategy')
+
+    def clean(self):
+        # print('inside: ', type(self.cleaned_data), self.cleaned_data)
+        rebalancing_strategy = self.cleaned_data['rebalancing_strategy']
+        optimization_strategy = self.cleaned_data['optimization_strategy']
+        if rebalancing_strategy == 'manual' and optimization_strategy != 'none':
+            raise ValidationError('Manual mode must not have an optimization strategy')
+        if rebalancing_strategy == 'monte_carlo' and optimization_strategy == 'none':
+            raise ValidationError('Monte Carlo portfolio management strategy must have a optimization strategy')
+        # print('inside2: ', type(self.cleaned_data), self.cleaned_data)
+        return rebalancing_strategy, optimization_strategy

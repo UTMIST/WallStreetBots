@@ -182,7 +182,8 @@ class Portfolio(models.Model):
     cash = models.DecimalField(max_digits=10, decimal_places=2, help_text='Cash')
     rebalancing_strategy = models.CharField(max_length=50, choices=BALANCINGSTRATEGY, default='manual',
                                             help_text="Portfolio Rebalancing Strategy")
-    optimization_strategy = models.CharField(max_length=50, choices=OPTIMIZATIONSTRATEGY, default='none')
+    optimization_strategy = models.CharField(max_length=50, choices=OPTIMIZATIONSTRATEGY,
+                                             default='none', help_text='Optimization Strategy')
 
     # Metadata
     class Meta:
