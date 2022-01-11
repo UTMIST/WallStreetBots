@@ -79,6 +79,7 @@ def dashboard(request):
                 return render(request, 'dashboard.html', {
                     'credential_form': credential_form,
                     'order_form': order_form,
+                    'strategy_form': StrategyForm(None),
                     'auth0User': auth0user,
                     'userdata': userdata,
                     'order_submit_form_response': response,
