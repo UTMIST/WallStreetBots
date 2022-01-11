@@ -50,3 +50,14 @@ class OrderForm(forms.Form):
             return "Order placed successfully"
         except Exception as e:
             return str(e)
+
+
+class StrategyForm(forms.Form):
+    BALANCINGSTRATEGY = [
+        ('manual', 'Manual portfolio management'),
+        ('monte_carlo', 'Monte carlo portfolio rebalancing'),
+    ]
+    OPTIMIZATIONSTRATEGY = [
+        ('none', 'None'),
+        ('ma_sharp_ratio', 'Sharp ratio based on moving average'),
+    ]

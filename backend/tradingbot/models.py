@@ -168,10 +168,21 @@ def mapping(key, choices):
 
 
 class Portfolio(models.Model):
+    BALANCINGSTRATEGY = [
+        ('manual', 'Manual portfolio management'),
+        ('monte_carlo', 'Monte carlo portfolio rebalancing'),
+    ]
+    OPTIMIZATIONSTRATEGY = [
+        ('none', 'None'),
+        ('ma_sharp_ratio', 'Sharp ratio based on moving average'),
+    ]
     """Portfolio for a user"""
     name = models.CharField(max_length=100, blank=False, help_text="Portfolio name")
     user = models.OneToOneField(User, help_text='Associated user', on_delete=models.CASCADE)
     cash = models.DecimalField(max_digits=10, decimal_places=2, help_text='Cash')
+    rebalancing_strategy = models.CharField(max_length=50, choices=BALANCINGSTRATEGY, default='manual',
+                                            help_text="Portfolio Rebalancing Strategy")
+    optimization_strategy = models.CharField(max_length=50, choices=OPTIMIZATIONSTRATEGY, default='none')
 
     # Metadata
     class Meta:
