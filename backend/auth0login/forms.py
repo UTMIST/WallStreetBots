@@ -1,6 +1,9 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
+from backend.tradingbot.apimanagers import AlpacaManager
+from backend.tradingbot.apiutility import place_general_order
+
 
 class CredentialForm(forms.Form):
     """credential for user"""
@@ -43,14 +46,16 @@ class OrderForm(forms.Form):
         transaction_type = self.cleaned_data['transaction_type']
         quantity = self.cleaned_data['quantity']
         time_in_force = self.cleaned_data['time_in_force']
-        from backend.tradingbot.apiutility import place_general_order
-        try:
-            place_general_order(user=user, user_details=user_details, ticker=ticker, quantity=quantity,
-                                order_type=order_type,
-                                transaction_type=transaction_type, time_in_force=time_in_force)
-            return "Order placed successfully"
-        except Exception as e:
-            return str(e)
+        place_general_order(
+            user=user,
+            user_details=user_details,
+            ticker=ticker,
+            quantity=quantity,
+            order_type=order_type,
+            transaction_type=transaction_type,
+            time_in_force=time_in_force,
+            alpaca_manager=AlpacaManager(user.credential.alpaca_id, user.credential.alpaca_key)
+        )
 
 
 class StrategyForm(forms.Form):

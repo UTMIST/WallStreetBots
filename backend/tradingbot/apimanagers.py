@@ -4,7 +4,7 @@ import alpaca_trade_api as tradeapi
 import alpaca_trade_api.common
 
 
-class AlpacaManager():  # API manager for Alpaca
+class AlpacaManager:  # API manager for Alpaca
     def __init__(self, API_KEY, SECRET_KEY):
         self.BASE_URL = alpaca_trade_api.common.URL("https://paper-api.alpaca.markets")
         self.ACCOUNT_URL = "{}/v2/account".format(self.BASE_URL)
