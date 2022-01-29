@@ -1,6 +1,7 @@
 import queue
-import feedparser
 from typing import Optional, Dict
+
+import feedparser
 
 q = queue.Queue()  # queue of processed items ready to be ingested by data pipeline
 rss_sources = []  # list of rss sources with their own processing function
