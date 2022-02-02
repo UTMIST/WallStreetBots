@@ -33,6 +33,3 @@ class TestApiUtilities(TestCase):
         self.assertTrue(result)
         num_orders = Order.objects.filter(user=user).count()
         self.assertTrue(num_orders == 1)
-
-
-
