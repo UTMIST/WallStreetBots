@@ -24,7 +24,8 @@ def create_local_order(user, ticker, quantity, order_type, transaction_type, sta
     order.save()
 
 
-def place_general_order(user, user_details, ticker, quantity, transaction_type, order_type, time_in_force, alpaca_manager: AlpacaManager) -> bool:
+def place_general_order(user, user_details, ticker, quantity, transaction_type, order_type, time_in_force,
+                        alpaca_manager: AlpacaManager) -> bool:
     """
     General place order function that takes account of database, margin, and alpaca synchronization.
     supports market buy/sell
@@ -77,6 +78,7 @@ def place_general_order(user, user_details, ticker, quantity, transaction_type, 
         transaction_type=transaction_type,
         status='A'
     )
+    order.save()
     client_order_id = order.order_number
     alpaca_manager.api.submit_order(
         symbol=ticker,
@@ -86,7 +88,6 @@ def place_general_order(user, user_details, ticker, quantity, transaction_type, 
         time_in_force=time_in_force,
         client_order_id=str(client_order_id)
     )
-    order.save()
     return True
 
 
