@@ -1,4 +1,5 @@
 from alpaca_trade_api.rest import APIError
+from backend.tradingbot.models import StockInstance, Stock, Company
 
 
 def validate_alpaca_backend(alpaca_manager):
@@ -64,8 +65,8 @@ def sync_alpaca(user):  # noqa: C901
     # user-specific synchronization
     # 1) synchronizes user's stock instances
     # brute force way to delete and add all new stocks
-    from backend.tradingbot.models import StockInstance, Stock, Company
-    StockInstance.objects.filter(user=user, portfolio=user.portfolio).delete()
+    if StockInstance.objects.filter(user=user, portfolio=user.portfolio).exists():
+        StockInstance.objects.filter(user=user, portfolio=user.portfolio).delete()
     for position in portfolio:
         company = Company.objects.get(ticker=position.symbol)
         stock = Stock.objects.get(company=company)

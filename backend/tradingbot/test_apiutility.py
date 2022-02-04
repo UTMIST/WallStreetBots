@@ -2,6 +2,7 @@ from django.test import TestCase
 from unittest.mock import MagicMock
 from .apimanagers import AlpacaManager
 from django.contrib.auth.models import User
+from .models import Order
 
 from .apiutility import place_general_order
 
@@ -30,6 +31,5 @@ class TestApiUtilities(TestCase):
             self.api_manager
         )
         self.assertTrue(result)
-
-
-
+        num_orders = Order.objects.filter(user=user).count()
+        self.assertTrue(num_orders == 1)
