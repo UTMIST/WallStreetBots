@@ -1,9 +1,16 @@
 from alpaca_trade_api.rest import APIError
+
 from backend.tradingbot.models import StockInstance, Stock, Company
 
 
-def validate_alpaca_backend(alpaca_manager):
-    return alpaca_manager.validate_api()[0]
+def validate_backend():
+    from backend.settings import BACKEND_ALPACA_ID, BACKEND_ALPACA_KEY
+    from backend.tradingbot.apimanagers import AlpacaManager
+    from django.core.exceptions import ValidationError
+    backendapi = AlpacaManager(BACKEND_ALPACA_ID, BACKEND_ALPACA_KEY)
+    if not backendapi.validate_api()[0]:
+        raise ValidationError(backendapi.validate_api()[1])
+    return backendapi
 
 
 def sync_database_company_stock(ticker):
@@ -104,7 +111,7 @@ def sync_alpaca(user):  # noqa: C901
     for order in alpaca_open_orders:
         # get usable trading cash
         if order.order_type == 'market' and order.side == 'buy':
-            backendapi = validate_alpaca_backend()
+            backendapi = validate_backend()
             _, price = backendapi.get_price(order.symbol)
             # print(f"{order.symbol}, {price}")
             usable_cash -= float(price) * float(order.qty)

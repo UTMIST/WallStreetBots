@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 
 from backend.tradingbot.apimanagers import AlpacaManager
-from backend.tradingbot.synchronization import sync_database_company_stock
+from backend.tradingbot.synchronization import validate_backend, sync_database_company_stock
 
 
 def create_local_order(user, ticker, quantity, order_type, transaction_type, status, client_order_id=''):
@@ -45,8 +45,9 @@ def place_general_order(user, user_details, ticker, quantity, transaction_type, 
     """
     if not alpaca_manager.validate_api():
         return False
+    backend_api = validate_backend()
 
-    check, price = alpaca_manager.get_price(ticker)
+    check, price = backend_api.get_price(ticker)
     if not check:
         raise ValidationError(f'Failed to get price for {ticker}, are you sure that the ticker name is correct?')
     if transaction_type == 'B':
