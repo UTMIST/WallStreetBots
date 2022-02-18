@@ -15,11 +15,11 @@ class News(models.Model):
 
     # Methods
     def __str__(self):
-        return f'Healine: {str(self.headline)} \n Link: {self.link} \n Date: {self.date}'
+        return f'Headline: {str(self.headline)} \n Link: {self.link} \n Date: {self.date}'
 
 
 class Tweets(models.Model):
-    """Tweets/Reddits of a compay"""
+    """Tweets/Reddits of a company"""
     content = models.TextField()
     date = models.DateField(auto_now=False, auto_now_add=False)
 
@@ -174,7 +174,7 @@ class Portfolio(models.Model):
     ]
     OPTIMIZATIONSTRATEGY = [
         ('none', 'None'),
-        ('ma_sharp_ratio', 'Sharp ratio based on moving average'),
+        ('ma_sharp_ratio', 'Sharpe ratio based on moving average'),
     ]
     """Portfolio for a user"""
     name = models.CharField(max_length=100, blank=False, help_text="Portfolio name")
