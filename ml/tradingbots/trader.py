@@ -38,14 +38,14 @@ class MonteCarloMAShapeRatioStrategy(Strategy):
     def get_actions(self, portfolio):
         """
         Args:
-            portfolio:   dict in the form {SYMB1:QTY, SYMB2:QTY}
+            portfolio:   dict in the form {cash: QTY, stocks: {SYMB1:QTY, SYMB2:QTY}}
 
         Returns:
             actions:    list of action objects
         """
-        # from pipelines import
-
-        actions = []
+        from pipelines.monte_carlo_w_ma import MonteCarloMovingAveragePipline
+        pipeline = MonteCarloMovingAveragePipline(name=self.name, portfolio=portfolio)
+        actions = pipeline.rebalance(order_type='M')
         return actions
 
 ## use django.setup to access database
