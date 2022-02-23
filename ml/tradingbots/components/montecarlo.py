@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 from portfoliomanager import PortfolioManager
 
@@ -34,13 +35,20 @@ class MonteCarloPortfolioUpdate(PortfolioManager):
 
     def rebalance(self):
         stocks = self.portfolio_stocks.keys()
+        portfolios = pd.DataFrame(columns=[*stocks, "Sharpe Ratio"])
+
         for i in range(self.simulation_itr):
             weights = np.random.random(len(stocks))
             weights /= np.sum(weights)
             portfolios.loc[i, stocks] = weights
-            metrics = portfolio_metrics(rf, returns, cov, weights, i)
-            portfolios.loc[i, ["Expected Return", "Portfolio Variance", "Portfolio Std", "Sharpe Ratio"]] = \
-                metrics.loc[i, ["Expected Return", "Portfolio Variance", "Portfolio Std", "Sharpe Ratio"]]
-
-        # return the best sharp ratio funcion
-        return portfolios[portfolios["Sharpe Ratio"] == portfolios["Sharpe Ratio"].max()]
+            portfolios.loc[i, ["Sharpe Ratio"]] = self.metric.apply(weights)
+        # get the maximum sharpe ratio
+        best = portfolios[portfolios["Sharpe Ratio"] == portfolios["Sharpe Ratio"].max()]
+        # convert to stock qty dict and return
+        PostP = {}
+        for ticker in stocks:
+            w = float(best.loc[:, ticker])
+            qty = w * self.total_portfolio_value * (1 - self.buffer) / self.price_dict[ticker]
+            PostP[ticker] = round(qty, 2)
+        return PostP
+        # TODO: finish moving average metric, write tests

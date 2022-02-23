@@ -24,7 +24,7 @@ class AlpacaManager():  # API manager for Alpaca
         except Exception as e:
             return False, str(e)
 
-    def get_bar(self, symbol, timestep, start, end, price_type="close"):
+    def get_bar(self, symbol, timestep, start, end, price_type="close", adjustment='all'):
         """
         Get a list of prices from latest to oldest with a timestep
 
@@ -40,7 +40,7 @@ class AlpacaManager():  # API manager for Alpaca
           - a list of time associated with each price
         """
         try:
-            bars = self.api.get_bars(symbol, timestep, start, end, adjustment='raw').df
+            bars = self.api.get_bars(symbol, timestep, start, end, adjustment=adjustment).df
             if bars.empty:
                 return [], []
             # print(bars)
