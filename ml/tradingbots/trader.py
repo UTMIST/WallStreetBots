@@ -48,4 +48,4 @@ class MonteCarloMAShapeRatioStrategy(Strategy):
         actions = pipeline.rebalance(order_type='M')
         return actions
 
-## use django.setup to access database
+#  use django.setup to access database
