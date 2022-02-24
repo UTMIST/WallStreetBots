@@ -17,7 +17,7 @@ class DataFetcher:
     def get_past_price(self, *args, **kwargs):
         return 0
 
-    def get_today_news(self, , *args, **kwargs):
+    def get_today_news(self, *args, **kwargs):
         return {"headline": "this is the headline"}
 
 
@@ -45,4 +45,5 @@ class AlpacaFetcher(DataFetcher):
     def get_past_price(self, ticker, timestep, start, end, price_type='close', adjustment='all'):
         timestep = self.TIMESTEP[timestep]
         prices, times = self.api.get_bar(ticker, timestep, start, end, price_type=price_type, adjustment=adjustment)
+        # prices and times from latest to oldest
         return prices, times

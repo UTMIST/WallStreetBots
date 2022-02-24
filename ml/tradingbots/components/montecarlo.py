@@ -34,6 +34,9 @@ class MonteCarloPortfolioUpdate(PortfolioManager):
         self.total_portfolio_value = total_portfolio_value
 
     def rebalance(self):
+        """
+        call this method to rebalance the portfolio
+        """
         stocks = self.portfolio_stocks.keys()
         portfolios = pd.DataFrame(columns=[*stocks, "Sharpe Ratio"])
 
@@ -41,7 +44,7 @@ class MonteCarloPortfolioUpdate(PortfolioManager):
             weights = np.random.random(len(stocks))
             weights /= np.sum(weights)
             portfolios.loc[i, stocks] = weights
-            portfolios.loc[i, ["Sharpe Ratio"]] = self.metric.apply(weights)
+            portfolios.loc[i, "Sharpe Ratio"] = self.metric.apply(weights)
         # get the maximum sharpe ratio
         best = portfolios[portfolios["Sharpe Ratio"] == portfolios["Sharpe Ratio"].max()]
         # convert to stock qty dict and return
@@ -51,4 +54,4 @@ class MonteCarloPortfolioUpdate(PortfolioManager):
             qty = w * self.total_portfolio_value * (1 - self.buffer) / self.price_dict[ticker]
             PostP[ticker] = round(qty, 2)
         return PostP
-        # TODO: finish moving average metric, write tests
+        # TODO: write tests

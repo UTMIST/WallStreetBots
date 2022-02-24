@@ -4,6 +4,7 @@ from ..trader import Action
 class Pipeline:
     def __init__(self, name, portfolio):
         self.name = name
+        self.portfolio = portfolio
         self.portfolio_cash = portfolio["cash"]
         self.portfolio_stocks = portfolio["stocks"]
 

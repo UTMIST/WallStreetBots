@@ -5,4 +5,4 @@ class PortfolioManager:
         self.metric = metric
 
     def rebalance(self):
-        return self.portfolio
+        return self.portfolio_stocks
