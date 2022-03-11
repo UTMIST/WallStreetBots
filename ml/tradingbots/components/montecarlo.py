@@ -54,4 +54,3 @@ class MonteCarloPortfolioUpdate(PortfolioManager):
             qty = w * self.total_portfolio_value * (1 - self.buffer) / self.price_dict[ticker]
             PostP[ticker] = round(qty, 2)
         return PostP
-        # TODO: write tests

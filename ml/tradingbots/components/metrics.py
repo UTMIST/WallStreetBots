@@ -38,7 +38,7 @@ class MovingAverageSharpeRatio(Metric):
         end = datetime.datetime.now(datetime.timezone.utc).isoformat()
         for stock in self.stocks:
             prices, _ = self.fetcher.get_past_price(stock, self.timestep, start, end)
-            prices = prices[:self.max_n][::-1]
+            prices = prices[:self.max_n][::-1] if self.max_n < len(prices) else prices[::-1]
             all_prices.loc[:, stock] = prices
         return all_prices
 
