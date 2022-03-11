@@ -48,7 +48,7 @@ class AlpacaManager():  # API manager for Alpaca
             bar_prices = bars[price_type].tolist()[::-1]  # bars is price data in time step from latest to oldest
             return bar_prices, [t.to_pydatetime() for t in bar_t]
         except Exception as e:
-            return "Failed to get bars from Alpaca: " + str(e)
+            raise Exception("Failed to get bars from Alpaca: " + str(e))
 
     def get_price(self, symbol):
         """
