@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from portfoliomanager import PortfolioManager
+from .portfoliomanager import PortfolioManager
 
 
 class MonteCarloPortfolioUpdate(PortfolioManager):
