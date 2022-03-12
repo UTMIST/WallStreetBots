@@ -24,7 +24,7 @@ class AlpacaManager():  # API manager for Alpaca
         except Exception as e:
             return False, str(e)
 
-    def get_bar(self, symbol, timestep, start, end, price_type="close"):
+    def get_bar(self, symbol, timestep, start, end, price_type="close", adjustment='all'):
         """
         Get a list of prices from latest to oldest with a timestep
 
@@ -40,7 +40,7 @@ class AlpacaManager():  # API manager for Alpaca
           - a list of time associated with each price
         """
         try:
-            bars = self.api.get_bars(symbol, timestep, start, end, adjustment='raw').df
+            bars = self.api.get_bars(symbol, timestep, start, end, adjustment=adjustment).df
             if bars.empty:
                 return [], []
             # print(bars)
@@ -48,7 +48,7 @@ class AlpacaManager():  # API manager for Alpaca
             bar_prices = bars[price_type].tolist()[::-1]  # bars is price data in time step from latest to oldest
             return bar_prices, [t.to_pydatetime() for t in bar_t]
         except Exception as e:
-            return "Failed to get bars from Alpaca: " + str(e)
+            raise Exception("Failed to get bars from Alpaca: " + str(e))
 
     def get_price(self, symbol):
         """
@@ -65,9 +65,9 @@ class AlpacaManager():  # API manager for Alpaca
         try:
             bar = self.api.get_last_trade(symbol)
             price = bar._raw['price']
-            return price
+            return True, price
         except Exception as e:
-            return "Failed to get price from Alpaca: " + str(e)
+            return False, "Failed to get price from Alpaca: " + str(e)
 
     def market_close(self):
         """
@@ -121,7 +121,7 @@ class AlpacaManager():  # API manager for Alpaca
         except Exception as e:
             return "Failed to access portfolio: " + str(e)
 
-    def market_buy(self, symbol, qty):
+    def market_buy(self, symbol, qty, client_order_id=None):
         """
         Buy the stocks specified
 
@@ -132,13 +132,23 @@ class AlpacaManager():  # API manager for Alpaca
         Returns:
 
         """
-        res = self.api.submit_order(
-            symbol=symbol,
-            qty=qty,
-            side='buy',
-            type='market',
-            time_in_force='gtc'
-        )
+        if client_order_id is not None:
+            res = self.api.submit_order(
+                symbol=symbol,
+                qty=qty,
+                side='buy',
+                type='market',
+                time_in_force='gtc',
+                client_order_id=client_order_id
+            )
+        else:
+            res = self.api.submit_order(
+                symbol=symbol,
+                qty=qty,
+                side='buy',
+                type='market',
+                time_in_force='gtc'
+            )
         if res.status == HTTPStatus.FORBIDDEN:
             print("Insufficient funds")
             return False
@@ -147,7 +157,7 @@ class AlpacaManager():  # API manager for Alpaca
             return False
         return True
 
-    def market_sell(self, symbol, qty):
+    def market_sell(self, symbol, qty, client_order_id=None):
         """
         Sell the stock specified
 
@@ -159,15 +169,27 @@ class AlpacaManager():  # API manager for Alpaca
           N/A
 
         """
-        try:
-            self.api.submit_order(
+        if client_order_id is not None:
+            res = self.api.submit_order(
+                symbol=symbol,
+                qty=qty,
+                side='sell',
+                type='market',
+                time_in_force='gtc',
+                client_order_id=client_order_id
+            )
+        else:
+            res = self.api.submit_order(
                 symbol=symbol,
                 qty=qty,
                 side='sell',
                 type='market',
                 time_in_force='gtc'
             )
-            log = 'Success to market sell'
-        except Exception as e:
-            log = 'Failed to market sell: ' + str(e)
-        return log
+        if res.status == HTTPStatus.FORBIDDEN:
+            print("Insufficient quantity")
+            return False
+        if res.status == HTTPStatus.UNPROCESSABLE_ENTITY:
+            print("Malformed request")
+            return False
+        return True

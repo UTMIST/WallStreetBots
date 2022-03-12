@@ -1,8 +1,9 @@
 import queue
-import feedparser
 from typing import Optional, Dict
 
-q = queue.Queue() # queue of processed items ready to be ingested by data pipeline
+import feedparser
+
+q = queue.Queue()  # queue of processed items ready to be ingested by data pipeline
 rss_sources = []  # list of rss sources with their own processing function
 
 
@@ -37,7 +38,6 @@ def wait_for_newest_rss_feed_entry():
             q.put(newest_rss_item)
 
         i = (i + 1) % len(rss_sources)
-
 
 
 urls = [

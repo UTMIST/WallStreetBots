@@ -15,11 +15,11 @@ class News(models.Model):
 
     # Methods
     def __str__(self):
-        return f'Healine: {str(self.headline)} \n Link: {self.link} \n Date: {self.date}'
+        return f'Headline: {str(self.headline)} \n Link: {self.link} \n Date: {self.date}'
 
 
 class Tweets(models.Model):
-    """Tweets/Reddits of a compay"""
+    """Tweets/Reddits of a company"""
     content = models.TextField()
     date = models.DateField(auto_now=False, auto_now_add=False)
 
@@ -45,7 +45,7 @@ class Company(models.Model):
 
     # Methods
     def __str__(self):
-        return f'Name: {str(self.name)} \n Ticker: {self.ticker}'
+        return f'{self.ticker}'
 
 
 class Stock(models.Model):
@@ -84,7 +84,8 @@ class StockTrade(models.Model):
     # TODO: this is an overly simplistic model.
     # need to add things like bought_price, sold_price, etc.
     # or add transaction type (buy, sell, etc.) which is probably preferable
-    # should probably change to represent a single exchange instance instead of trying to show an entire buy/sell operation
+    # should probably change to represent a single exchange instance instead of trying to
+    # show an entire buy/sell operation
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     price = models.FloatField()
     amount = models.IntegerField()
@@ -111,15 +112,30 @@ class Order(models.Model):
         ('B', 'Buy'),
         ('S', 'Sell'),
     ]
+    STATUS = [
+        ('A', 'Accepted'),
+        ('F', 'Filled'),
+        ('C', 'Closed')
+    ]
     # Fields
     order_number = models.BigAutoField(primary_key=True)
+    client_order_id = models.CharField(max_length=100, default='', help_text='for alpaca sync')
     user = models.ForeignKey(User, help_text='associated user', on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True, help_text='order timestamp')
+    timestamp = models.DateTimeField(auto_now_add=True, help_text='order submission timestamp')
     stock = models.ForeignKey(Stock, help_text='associated stock', on_delete=models.CASCADE)
     order_type = models.CharField(choices=ORDERTYPES, max_length=2, help_text='order type')
-    price = models.DecimalField(max_digits=8, decimal_places=2, help_text='order price', null=True)
     quantity = models.DecimalField(max_digits=8, decimal_places=2, help_text='quantity')
-    transaction_type = models.CharField(choices=TRANSACTIONTYPES, max_length=2, help_text='buy or sell transaction type')
+    transaction_type = models.CharField(choices=TRANSACTIONTYPES, max_length=2,
+                                        help_text='buy or sell transaction type')
+    status = models.CharField(choices=STATUS, max_length=1, help_text='order status')
+
+    # Not required
+    filled_avg_price = models.DecimalField(max_digits=8, decimal_places=2, help_text='filled average price', blank=True,
+                                           null=True)
+    filled_timestamp = models.DateTimeField(blank=True, help_text='order filled timestamp', null=True)
+    limit_price = models.DecimalField(max_digits=8, decimal_places=2, help_text='limit price', blank=True, null=True)
+    stop_price = models.DecimalField(max_digits=8, decimal_places=2, help_text='stop price', blank=True, null=True)
+    filled_quantity = models.DecimalField(max_digits=8, decimal_places=2, default=0, help_text='filled quantity')
 
     # Metadata
     class Meta:
@@ -129,14 +145,45 @@ class Order(models.Model):
     def __str__(self):
         return f"Order {self.order_number} \n User: {self.user} \n" \
                f"Timestamp: {self.timestamp} \n Company: {str(self.stock)}" \
-               f"Order type: {self.order_type} \n Price: {self.price} \n Quantity: {self.quantity}"
+               f"Order type: {self.order_type} \n Price: {self.filled_avg_price} \n Quantity: {self.quantity}"
+
+    def display_order(self):
+        ret = {
+            'stock': str(self.stock),
+            'quantity': str(self.quantity),
+            'type': f'{mapping(str(self.order_type), Order.ORDERTYPES)} '
+                    f'{mapping(str(self.transaction_type), Order.TRANSACTIONTYPES)}',
+            'timestamp': str(self.timestamp),
+            'filled_quantity': str(self.filled_quantity),
+            'filled_avg_price': str(self.filled_avg_price),
+            'status': mapping(str(self.status), Order.STATUS),
+        }
+        return ret
+
+
+def mapping(key, choices):
+    for row in choices:
+        if row[0] == key:
+            return row[1]
 
 
 class Portfolio(models.Model):
+    BALANCINGSTRATEGY = [
+        ('manual', 'Manual portfolio management'),
+        ('monte_carlo', 'Monte carlo portfolio rebalancing'),
+    ]
+    OPTIMIZATIONSTRATEGY = [
+        ('none', 'None'),
+        ('ma_sharp_ratio', 'Sharpe ratio based on moving average'),
+    ]
     """Portfolio for a user"""
     name = models.CharField(max_length=100, blank=False, help_text="Portfolio name")
     user = models.OneToOneField(User, help_text='Associated user', on_delete=models.CASCADE)
     cash = models.DecimalField(max_digits=10, decimal_places=2, help_text='Cash')
+    rebalancing_strategy = models.CharField(max_length=50, choices=BALANCINGSTRATEGY, default='manual',
+                                            help_text="Portfolio Rebalancing Strategy")
+    optimization_strategy = models.CharField(max_length=50, choices=OPTIMIZATIONSTRATEGY,
+                                             default='none', help_text='Optimization Strategy')
 
     # Metadata
     class Meta:
@@ -160,4 +207,5 @@ class StockInstance(models.Model):
 
     # Methods
     def __str__(self):
-        return f'User: {str(self.user)} Stock: {str(self.stock)} \n Quantity: {self.quantity} \n Portfolio: {self.portfolio.name}'
+        return f'User: {str(self.user)} Stock: {str(self.stock)} \n Quantity: {self.quantity} \n ' \
+               f'Portfolio: {self.portfolio.name}'

@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import Credential, BotInstance
 from ..tradingbot.models import Order, Portfolio, StockInstance
 
@@ -8,11 +9,11 @@ class CredentialAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('user', 'timestamp', 'order_type', 'price', 'quantity')
+    list_display = ('user', 'timestamp', 'stock', 'transaction_type', 'order_type', 'filled_avg_price', 'quantity')
 
 
 class PortfolioAdmin(admin.ModelAdmin):
-    list_display = ('name', 'user', 'cash')
+    list_display = ('name', 'user', 'cash', 'rebalancing_strategy', 'optimization_strategy')
 
 
 class BotInstanceAdmin(admin.ModelAdmin):
@@ -21,7 +22,6 @@ class BotInstanceAdmin(admin.ModelAdmin):
 
 class StockInstanceAdmin(admin.ModelAdmin):
     list_display = ('user', 'portfolio', 'stock', 'quantity')
-
 
 
 # Register your models here.

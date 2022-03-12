@@ -41,13 +41,18 @@ def dashboard(request):
             'buy_power': user_details['buy_power'],
             'portfolio': user_details['portfolio'],
             'cash': user_details['cash'],
+            'tradable_cash': user_details['usable_cash'],
             'currency': user_details['currency'],
-            'short_portfolio_value':user_details['short_portfolio_value'],
-            'long_portfolio_value':user_details['long_portfolio_value'],
+            'short_portfolio_value': user_details['short_portfolio_value'],
+            'long_portfolio_value': user_details['long_portfolio_value'],
+            'orders': user_details['orders'],
+            'strategy': user_details['strategy']
         }
     # managing forms
-    from backend.auth0login.forms import CredentialForm
+    from backend.auth0login.forms import CredentialForm, OrderForm, StrategyForm
     credential_form = CredentialForm(request.POST or None)
+    order_form = OrderForm(request.POST or None)
+    strategy_form = StrategyForm(request.POST or None)
     if request.method == 'POST':
         # let user input their Alpaca API information
         if 'submit_credential' in request.POST:
@@ -58,17 +63,46 @@ def dashboard(request):
                     user.credential.save()
                 else:
                     from .models import Credential
-                    cred = Credential(user=request.user, alpaca_id=credential_form.get_id(), alpaca_key=credential_form.get_key())
+                    cred = Credential(user=request.user, alpaca_id=credential_form.get_id(),
+                                      alpaca_key=credential_form.get_key())
                     cred.save()
                 return HttpResponseRedirect('/')
 
         if 'submit_order' in request.POST:
-            pass
+            if order_form.is_valid():
+                response = order_form.place_order(user, user_details)
+                order_form = OrderForm()
+                #  update order for display
+                from backend.tradingbot.models import Order
+                userdata["orders"] = [order.display_order() for order in
+                                      Order.objects.filter(user=user).order_by('-timestamp').iterator()]
+                return render(request, 'dashboard.html', {
+                    'credential_form': credential_form,
+                    'order_form': order_form,
+                    'strategy_form': StrategyForm(None),
+                    'auth0User': auth0user,
+                    'userdata': userdata,
+                    'order_submit_form_response': response,
+                })
+
+        if 'submit_strategy' in request.POST:
+            if strategy_form.is_valid():
+                # here for some reason form.cleaned_data changed from type dict to
+                # type tuple. I tried to find the reason but it didn't seem to caused by
+                # our code. Might be and django bug
+                rebalance_strategy = strategy_form.cleaned_data[0]
+                optimization_strategy = strategy_form.cleaned_data[1]
+                user.portfolio.rebalancing_strategy = rebalance_strategy
+                user.portfolio.optimization_strategy = optimization_strategy
+                user.portfolio.save()
+                return HttpResponseRedirect('/')
 
     return render(request, 'dashboard.html', {
         'credential_form': credential_form,
+        'order_form': order_form,
+        'strategy_form': strategy_form,
         'auth0User': auth0user,
-        'userdata': userdata
+        'userdata': userdata,
     })
 
 
