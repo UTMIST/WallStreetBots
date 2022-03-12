@@ -1,4 +1,4 @@
-from ..trader import Action
+from ml.tradingbots.trader import Action
 
 
 class Pipeline:

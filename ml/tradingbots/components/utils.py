@@ -52,3 +52,6 @@ class AlpacaFetcher(DataFetcher):
 class DummyFetcher(DataFetcher):
     def get_past_price(self, *args, **kwargs):
         return [102, 103, 102, 101, 100, 99], ['t6', 't5', 't4', 't3', 't2', 't1']
+
+    def get_cur_price(self, *args, **kwargs):
+        return 102

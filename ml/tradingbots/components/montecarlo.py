@@ -14,7 +14,7 @@ class MonteCarloPortfolioUpdate(PortfolioManager):
             simulation_itr: number of simulation iterations for monte carlo
             buffer: proportion of the portfolio to be cash (buffer zone for price fluctuations)
         """
-        super(PortfolioManager, self).__init__(portfolio, metric)
+        super(MonteCarloPortfolioUpdate, self).__init__(portfolio, metric)
         self.total_portfolio_value = None
         self.price_dict = None
         self.simulation_itr = simulation_itr

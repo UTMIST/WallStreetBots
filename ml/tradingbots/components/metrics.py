@@ -10,6 +10,11 @@ class Metric:
         return 0
 
 
+class DummyMetric:
+    def apply(self, *args, **kwargs):
+        return float(np.random.rand(1))
+
+
 class MovingAverageSharpeRatio(Metric):
     def __init__(self, stocks, past_days, max_n, timestep, rf, fetcher):
         """

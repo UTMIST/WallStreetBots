@@ -25,6 +25,13 @@ class Action:
         self.ticker = ticker
         self.quantity = quantity
 
+    def __dict__(self):
+        return {'order_type': self.order_type,
+                'transaction_type': self.transaction_type,
+                'ticker': self.ticker,
+                'quantity': self.quantity
+                }
+
 
 class Strategy:
     def __init__(self, name):
