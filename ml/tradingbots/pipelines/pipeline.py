@@ -1,4 +1,4 @@
-from ..trader import Action
+from ml.tradingbots.trader import Action
 
 
 class Pipeline:
@@ -44,7 +44,7 @@ class Pipeline:
             qty = qty2 - qty1
             if get_transaction_type(qty):
                 return Action(order_type=order_type, transaction_type=get_transaction_type(qty), ticker=key,
-                              quantity=qty)
+                              quantity=abs(qty))
             else:
                 return False
 

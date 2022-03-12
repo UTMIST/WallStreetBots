@@ -47,3 +47,11 @@ class AlpacaFetcher(DataFetcher):
         prices, times = self.api.get_bar(ticker, timestep, start, end, price_type=price_type, adjustment=adjustment)
         # prices and times from latest to oldest
         return prices, times
+
+
+class DummyFetcher(DataFetcher):
+    def get_past_price(self, *args, **kwargs):
+        return [102, 103, 102, 101, 100, 99], ['t6', 't5', 't4', 't3', 't2', 't1']
+
+    def get_cur_price(self, *args, **kwargs):
+        return 102

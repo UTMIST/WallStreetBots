@@ -134,3 +134,6 @@ dmypy.json
 
 # Data stuff
 **.csv
+
+# Local testings
+localtest*
