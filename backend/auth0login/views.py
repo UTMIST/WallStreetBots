@@ -14,8 +14,7 @@ def login(request):
     if user.is_authenticated:
         return redirect(dashboard)
     else:
-        return render(request, 'login.html')
-
+        return render(request, 'accounts/login.html')
 
 @login_required
 def dashboard(request):

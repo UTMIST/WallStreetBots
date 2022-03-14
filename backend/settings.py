@@ -75,10 +75,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
+# TEMPLATE_DIR = os.path.join(BASE_DIR, "frontend/templates")  # ROOT dir for templates
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'APP_DIRS': True,
+        'APP_DIRS': True,# [True, TEMPLATE_DIR],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -142,7 +144,12 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'auth0login/static'),
+)
 
 # Auth0 authentication
 SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
