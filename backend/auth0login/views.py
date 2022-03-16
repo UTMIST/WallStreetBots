@@ -96,13 +96,33 @@ def dashboard(request):
                 user.portfolio.save()
                 return HttpResponseRedirect('/')
 
-    return render(request, 'dashboard.html', {
+    return render(request, 'home/index.html', {
         'credential_form': credential_form,
         'order_form': order_form,
         'strategy_form': strategy_form,
         'auth0User': auth0user,
         'userdata': userdata,
     })
+
+
+@login_required
+def orders(request):
+    return render(request, 'home/orders.html')
+
+
+@login_required
+def positions(request):
+    return render(request, 'home/positions.html')
+
+
+@login_required
+def user_settings(request):
+    return render(request, 'home/user-settings.html')
+
+
+@login_required
+def machine_learning(request):
+    return render(request, 'home/machine-learning.html')
 
 
 def logout(request):
