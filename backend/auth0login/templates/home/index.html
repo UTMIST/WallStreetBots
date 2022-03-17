@@ -68,21 +68,12 @@
               <div class="row">
                 <div class="col-lg-6">
                   <div class="d-flex flex-column h-100">
-                    <p class="mb-1 pt-2 text-bold">Built by developers</p>
-                    <h5 class="font-weight-bolder">Soft UI Dashboard</h5>
-                    <p class="mb-5">From colors, cards, typography to complex elements, you will find the full documentation.</p>
-                    <a class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" href="javascript:;">
-                      Read More
-                      <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="col-lg-5 ms-auto text-center mt-5 mt-lg-0">
-                  <div class="bg-gradient-primary border-radius-lg h-100">
-                    <img src="/static/assets/img/shapes/waves-white.svg" class="position-absolute h-100 w-50 top-0 d-lg-block d-none" alt="waves">
-                    <div class="position-relative d-flex align-items-center justify-content-center h-100">
-                      <img class="w-100 position-relative z-index-2 pt-4" src="/static/assets/img/illustrations/rocket-white.png" alt="rocket">
-                    </div>
+                    <p class="mb-1 pt-2 text-bold">Welcome</p>
+                    <h4 class="font-weight-bolder">{{user.username}}</h4>
+                    <p class="mb-6"> Alpaca ID: {{ userdata.alpaca_id }} <br>
+                        Alpaca Key: {{ userdata.alpaca_key }} <br>
+                        Shorting: Enabled
+                    </p>
                   </div>
                 </div>
               </div>
@@ -91,15 +82,21 @@
         </div>
         <div class="col-lg-5">
           <div class="card h-100 p-3">
-            <div class="overflow-hidden position-relative border-radius-lg bg-cover h-100" style="background-image: url('/static/assets/img/ivancik.jpg');">
-              <span class="mask bg-gradient-dark"></span>
+            <div class="overflow-hidden position-relative border-radius-lg bg-cover h-100">
               <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
-                <h5 class="text-white font-weight-bolder mb-4 pt-2">Work with the rockets</h5>
-                <p class="text-white">Wealth creation is an evolutionarily recent positive-sum game. It is all about who take the opportunity first.</p>
-                <a class="text-white text-sm font-weight-bold mb-0 icon-move-right mt-auto" href="javascript:;">
-                  Read More
-                  <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
-                </a>
+                      <form role="form text-left" action="" method="post">
+                        {% csrf_token %}
+
+                          <h6>Alpaca ID</h6>
+                        <div class="mb-1">
+                            {{ credential_form.alpaca_id }}
+                        </div>
+                        <h6>Alpaca Key</h6>
+                        <div class="mb-1">
+                            {{ credential_form.alpaca_key }}
+                        </div>
+                          <button type="submit" name="submit_credential" class="btn bg-gradient-info w-100 mt-2 mb-0">Update Credential</button>
+                      </form>
               </div>
             </div>
           </div>

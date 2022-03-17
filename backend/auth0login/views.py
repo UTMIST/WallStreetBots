@@ -35,7 +35,7 @@ def dashboard(request):
         userdata = {
             'name': user.first_name,
             'alpaca_id': alpaca_id,
-            'alpaca_key': "*" * len(alpaca_key),
+            'alpaca_key': " "+ "*" * 10,
             'total_equity': user_details['equity'],
             'buy_power': user_details['buy_power'],
             'portfolio': user_details['portfolio'],
