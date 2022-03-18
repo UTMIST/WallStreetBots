@@ -75,7 +75,7 @@ def dashboard(request):
                 from backend.tradingbot.models import Order
                 userdata["orders"] = [order.display_order() for order in
                                       Order.objects.filter(user=user).order_by('-timestamp').iterator()]
-                return render(request, 'dashboard.html', {
+                return render(request, 'home/index.html', {
                     'credential_form': credential_form,
                     'order_form': order_form,
                     'strategy_form': StrategyForm(None),
