@@ -107,22 +107,22 @@ def dashboard(request):
 
 @login_required
 def orders(request):
-    return render(request, 'home/orders.html')
+    return render(request, 'home/page-not-implemented.html')# 'home/orders.html')
 
 
 @login_required
 def positions(request):
-    return render(request, 'home/positions.html')
+    return render(request, 'home/page-not-implemented.html') # 'home/positions.html')
 
 
 @login_required
 def user_settings(request):
-    return render(request, 'home/user-settings.html')
+    return render(request, 'home/page-not-implemented.html') # 'home/user-settings.html')
 
 
 @login_required
 def machine_learning(request):
-    return render(request, 'home/machine-learning.html')
+    return render(request, 'home/page-not-implemented.html') # 'home/machine-learning.html')
 
 
 def logout(request):
