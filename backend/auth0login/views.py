@@ -16,6 +16,7 @@ def login(request):
     else:
         return render(request, 'accounts/login.html')
 
+
 @login_required
 def dashboard(request):
     user = request.user
