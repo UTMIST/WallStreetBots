@@ -115,6 +115,7 @@ class Order(models.Model):
     STATUS = [
         ('A', 'Accepted'),
         ('F', 'Filled'),
+        ('N', 'New'),
         ('C', 'Closed')
     ]
     # Fields
