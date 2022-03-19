@@ -196,12 +196,12 @@
       </div>
 
       <div class="row my-4">
-        <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
+        <div class="col-lg-7 col-md-6 mb-md-0 mb-4">
           <div class="card">
             <div class="card-header pb-0">
               <div class="row">
                 <div class="col-lg-10 col-7">
-                  <h6>Holdings</h6>
+                  <h4>Holdings</h4>
                   <p class="text-sm mb-0">
                     <span class="font-weight-bold ms-1">Long Portfolio Value:</span> $ {{userdata.long_portfolio_value}}
                     <span class="font-weight-bold ms-1">Short Portfolio Value:</span> $ {{userdata.short_portfolio_value}} <br>
@@ -258,20 +258,18 @@
                       </td>
                     </tr>
                     {% endfor %}
-
-
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-5 col-md-6">
           <div class="card">
             <div class="card-header pb-0">
               <div class="row">
                 <div class="col-lg-10 col-7">
-                  <h6>Past Orders</h6>
+                  <h4>Past Orders</h4>
                 </div>
                 <div class="col-lg-2 col-5 my-auto text-end">
                   <div class="dropdown float-lg-end pe-4">
@@ -309,15 +307,13 @@
                             <h6 class="mb-0 text-sm">{{ order.quantity }}</h6>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> {{ order.timestamp }} </span>
+                        <span class="text-xs font-weight-bold"> {{ order.timestamp }} utc </span>
                       </td>
                       <td class="align-middle text-center text-sm">
                         <span class="text-xs font-weight-bold"> {{ order.status}} </span>
                       </td>
                     </tr>
                     {% endfor %}
-
-
                   </tbody>
                 </table>
               </div>
