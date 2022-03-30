@@ -115,6 +115,7 @@ class Order(models.Model):
     STATUS = [
         ('A', 'Accepted'),
         ('F', 'Filled'),
+        ('N', 'New'),
         ('C', 'Closed')
     ]
     # Fields
@@ -153,7 +154,7 @@ class Order(models.Model):
             'quantity': str(self.quantity),
             'type': f'{mapping(str(self.order_type), Order.ORDERTYPES)} '
                     f'{mapping(str(self.transaction_type), Order.TRANSACTIONTYPES)}',
-            'timestamp': str(self.timestamp),
+            'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
             'filled_quantity': str(self.filled_quantity),
             'filled_avg_price': str(self.filled_avg_price),
             'status': mapping(str(self.status), Order.STATUS),

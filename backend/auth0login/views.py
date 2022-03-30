@@ -14,7 +14,7 @@ def login(request):
     if user.is_authenticated:
         return redirect(dashboard)
     else:
-        return render(request, 'login.html')
+        return render(request, 'accounts/login.html')
 
 
 @login_required
@@ -36,7 +36,7 @@ def dashboard(request):
         userdata = {
             'name': user.first_name,
             'alpaca_id': alpaca_id,
-            'alpaca_key': "*" * len(alpaca_key),
+            'alpaca_key': " " + "*" * 10,
             'total_equity': user_details['equity'],
             'buy_power': user_details['buy_power'],
             'portfolio': user_details['portfolio'],
@@ -76,7 +76,7 @@ def dashboard(request):
                 from backend.tradingbot.models import Order
                 userdata["orders"] = [order.display_order() for order in
                                       Order.objects.filter(user=user).order_by('-timestamp').iterator()]
-                return render(request, 'dashboard.html', {
+                return render(request, 'home/index.html', {
                     'credential_form': credential_form,
                     'order_form': order_form,
                     'strategy_form': StrategyForm(None),
@@ -97,13 +97,33 @@ def dashboard(request):
                 user.portfolio.save()
                 return HttpResponseRedirect('/')
 
-    return render(request, 'dashboard.html', {
+    return render(request, 'home/index.html', {
         'credential_form': credential_form,
         'order_form': order_form,
         'strategy_form': strategy_form,
         'auth0User': auth0user,
         'userdata': userdata,
     })
+
+
+@login_required
+def orders(request):
+    return render(request, 'home/page-not-implemented.html')  # 'home/orders.html')
+
+
+@login_required
+def positions(request):
+    return render(request, 'home/page-not-implemented.html')  # 'home/positions.html')
+
+
+@login_required
+def user_settings(request):
+    return render(request, 'home/page-not-implemented.html')  # 'home/user-settings.html')
+
+
+@login_required
+def machine_learning(request):
+    return render(request, 'home/page-not-implemented.html')  # 'home/machine-learning.html')
 
 
 def logout(request):

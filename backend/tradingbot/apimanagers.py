@@ -63,8 +63,8 @@ class AlpacaManager():  # API manager for Alpaca
         Note now the current price is based on last trade
         """
         try:
-            bar = self.api.get_last_trade(symbol)
-            price = bar._raw['price']
+            bar = self.api.get_latest_trade(symbol)
+            price = bar._raw['p']
             return True, price
         except Exception as e:
             return False, "Failed to get price from Alpaca: " + str(e)

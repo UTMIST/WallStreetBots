@@ -51,12 +51,12 @@ def sync_alpaca(user):  # noqa: C901
 
     # get account information
     account = api.get_account()
-    user_details['equity'] = account.equity
-    user_details['buy_power'] = account.buying_power
-    user_details['cash'] = account.cash
+    user_details['equity'] = str(round(float(account.equity), 2))
+    user_details['buy_power'] = str(round(float(account.buying_power), 2))
+    user_details['cash'] = str(round(float(account.cash), 2))
     user_details['currency'] = account.currency
-    user_details['long_portfolio_value'] = account.long_market_value
-    user_details['short_portfolio_value'] = account.short_market_value
+    user_details['long_portfolio_value'] = str(round(float(account.long_market_value), 2))
+    user_details['short_portfolio_value'] = str(round(float(account.short_market_value), 2))
 
     # get portfolio information
     portfolio = api.get_positions()
@@ -100,12 +100,14 @@ def sync_alpaca(user):  # noqa: C901
             continue
         if alpaca_order.status == 'accepted':
             order.status = 'A'
+        elif alpaca_order.status == 'new':
+            order.status = 'N'
         elif alpaca_order.status == 'filled':
             order.status = 'F'
             order.filled_avg_price = float(alpaca_order.filled_avg_price)
             order.filled_timestamp = alpaca_order.filled_at.to_pydatetime()
             order.filled_quantity = float(alpaca_order.filled_qty)
-        else:
+        else:  # order closed, either cancelled or completed
             order.status = 'C'
         order.save()
 
@@ -125,7 +127,7 @@ def sync_alpaca(user):  # noqa: C901
                                    order_type=order.order_type, transaction_type=order.side, status="A",
                                    client_order_id=order.client_order_id)
 
-    user_details['usable_cash'] = str(usable_cash)
+    user_details['usable_cash'] = str(round(usable_cash, 2))
     user_details['portfolio'] = portfolio
     user_details['orders'] = [order.display_order() for order in
                               Order.objects.filter(user=user).order_by('-timestamp').iterator()]
