@@ -46,7 +46,9 @@ def dashboard(request):
             'short_portfolio_value': user_details['short_portfolio_value'],
             'long_portfolio_value': user_details['long_portfolio_value'],
             'orders': user_details['orders'],
-            'strategy': user_details['strategy']
+            'strategy': user_details['strategy'],
+            'percent_change': user_details['portfolio_percent_change'],
+            'change_direction': user_details['portfolio_change_direction']
         }
     # managing forms
     from backend.auth0login.forms import CredentialForm, OrderForm, StrategyForm

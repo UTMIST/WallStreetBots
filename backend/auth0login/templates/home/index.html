@@ -18,7 +18,11 @@
                     <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Equity</p>
                     <h5 class="font-weight-bolder mb-0">
                       $ {{ userdata.total_equity}}
-                      <span class="text-success text-sm font-weight-bolder">+tbc%</span>
+                      {% if userdata.change_direction == "positive" %}
+                        <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> {{ userdata.percent_change}}%</span>
+                      {% elif userdata.change_direction == "negative" %}
+                        <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> {{ userdata.percent_change}}%</span>
+                      {% endif %}
                     </h5>
                   </div>
                 </div>
@@ -35,7 +39,6 @@
                     <p class="text-sm mb-0 text-capitalize font-weight-bold">Marginal Buying Power</p>
                     <h5 class="font-weight-bolder mb-0">
                       $ {{ userdata.buy_power }}
-                      <span class="text-success text-sm font-weight-bolder">+TBC%</span>
                     </h5>
                   </div>
                 </div>
