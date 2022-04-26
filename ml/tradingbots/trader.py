@@ -41,7 +41,7 @@ class Strategy:
         return []
 
 
-class MonteCarloMAShapeRatioStrategy(Strategy):
+class MonteCarloMASharpeRatioStrategy(Strategy):
     def get_actions(self, portfolio):
         """
         Args:
