@@ -42,7 +42,8 @@ class NaiveHMMPortfolioUpdate(PortfolioManager):
         buy_list = []
         new_portfolio = {}
         for i in self.portfolio_stocks.keys():
-            current_data = self.HMMdatafetcher(BACKEND_ALPACA_ID, BACKEND_ALPACA_KEY, i, self.start, self.end)
+            datamanager = self.HMMdatafetcher(BACKEND_ALPACA_ID, BACKEND_ALPACA_KEY, i, self.start, self.end)
+            current_data = datamanager.align_data('all')
             current_hmm = self.HMM(current_data, self.num_hidden_states, self.covar_type, self.n_iter)
             current_hmm.train(current_data)
             current_hmm.evaluation()
