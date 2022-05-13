@@ -4,6 +4,8 @@ from datetime import datetime, date
 import hmmlearn.hmm as hmm
 import requests, json
 import alpaca_trade_api as tradeapi
+from alpaca_trade_api.rest import TimeFrame
+from datetime import timedelta
 
 from .portfoliomanager import PortfolioManager
 
@@ -101,35 +103,39 @@ class DataManager():
         self.first_day = None
         self.unnormalized_close = None
 
-    def get_data_hmm(self, tname, tf_type, start_date, end_date, adjustment, open):
+    def get_data(self, adjustment, open):
         if open:
-            df = self.api.api.get_bars(tname, tf_type, start_date, end_date, adjustment).df[['open']]  # get data
+            start_date_open = datetime.strptime(self.start_date, '%Y-%m-%d').date() + timedelta(days=1)
+            end_date_open = datetime.strptime(self.end_date, '%Y-%m-%d').date() + timedelta(days=1)
+            str_start_date_open = start_date_open.strftime("%Y-%m-%d")
+            str_end_date_open = end_date_open.strftime("%Y-%m-%d")
+            df = self.api.api.get_bars(self.ticker, TimeFrame.Day, str_start_date_open, str_end_date_open, adjustment).df[['open']]  # get data
 
             df['timestamp'] = df.index
             df['datetime'] = pd.to_datetime(df['timestamp'])
             df['date'] = df['timestamp'].dt.date  # get date column
 
-            true_start_date = max(datetime.strptime(start_date, '%Y-%m-%d').date(), df['date'].iloc[0])
-            true_end_date = min(datetime.strptime(end_date, '%Y-%m-%d').date(), df['date'].iloc[df.shape[0] - 1])
+            true_start_date = max(datetime.strptime(str_start_date_open, '%Y-%m-%d').date(), df['date'].iloc[0])
+            true_end_date = min(datetime.strptime(str_end_date_open, '%Y-%m-%d').date(), df['date'].iloc[df.shape[0] - 1])
 
             true_df = df[(df['date'] >= true_start_date) & (df['date'] <= true_end_date)]
             return true_df
         else:
-            df = self.api.api.get_bars(tname, tf_type, start_date, end_date, adjustment).df[['close']]  # get data
+            df = self.api.api.get_bars(self.ticker, TimeFrame.Minute, self.start_date, self.end_date, adjustment).df[['close']]  # get data
 
             df['timestamp'] = df.index
             df['datetime'] = pd.to_datetime(df['timestamp'])
             df['date'] = df['timestamp'].dt.date  # get date column
 
-            true_start_date = max(datetime.strptime(start_date, '%Y-%m-%d').date(), df['date'].iloc[0])
-            true_end_date = min(datetime.strptime(end_date, '%Y-%m-%d').date(), df['date'].iloc[df.shape[0] - 1])
+            true_start_date = max(datetime.strptime(self.start_date, '%Y-%m-%d').date(), df['date'].iloc[0])
+            true_end_date = min(datetime.strptime(self.end_date, '%Y-%m-%d').date(), df['date'].iloc[df.shape[0] - 1])
 
             true_df = df[(df['date'] >= true_start_date) & (df['date'] <= true_end_date)]
             return true_df
 
-    def align_data(self, tname, tf_type, start_date, end_date, adjustment, open):
-        open = self.get_data_hmm(tname, tf_type, start_date, end_date, adjustment, open)
-        close = self.get_data_hmm(tname, tf_type, start_date, end_date, adjustment, open)
+    def align_data(self, adjustment):
+        open = self.get_data(adjustment, True)
+        close = self.get_data(adjustment, False)
         open_cut = list(open['date'])[:-1]
         close_cut = list(close['date'])[1:]
         common_date = list(set(np.setdiff1d(open_cut, close_cut))) + list(set(np.setdiff1d(close_cut, open_cut)))
@@ -146,7 +152,7 @@ class DataManager():
         self.close = new_close
         # return new_open, new_close
 
-    def normalize_helper(seq):
+    def normalize_helper(self, seq):
         first_price = seq[0]
         for i in range(len(seq)):
             seq[i] = seq[i] - first_price
@@ -157,15 +163,12 @@ class DataManager():
         self.first_day = []
         start = 0
         for i in range(len(list(self.close['date'].value_counts().sort_index()))):
-            end = start + list(self.close['date'].value_counts().sort_index())[i]
-            seq = self.close['close'][start:end].to_numpy()
-            self.first_day += [seq[0]]
-            normalized_seq += list(self.normalize_helper(seq))
-            start = end
+          end = start + list(self.close['date'].value_counts().sort_index())[i]
+          seq = self.close['close'][start:end].to_numpy()
+          self.first_day += [seq[0]]
+          normalized_seq += list(self.normalize_helper(seq))
+          start = end
         seq = self.close
-        first_price = seq[0]
-        for i in range(len(seq)):
-            seq[i] = seq[i] - first_price
 
         self.normalized_close = seq
         # return seq
@@ -174,7 +177,7 @@ class DataManager():
         lst = []
         j = -1
 
-        for i in range(1, len(self.close)):
+        for i in range(1, len(self.open)):
             j += list(self.close['date'].value_counts())[i]
             last_data = self.close['close'][j] + self.first_day[i]
             lst.append(last_data)
@@ -199,24 +202,24 @@ class HMM():
         self.num_pred_acc = None
 
     def train(self, datamanager):
-        model = hmm.GaussianHMM(15, covariance_type="full", n_iter=10 ^ 6)  # or ="full"
-        model.fit(np.array(self.data.normalized_close).reshape(-1, 1), lengths=self.data.len_of_data)
+        model = hmm.GaussianHMM(self.num_hidden_states, covariance_type=self.covar_type, n_iter=self.n_iter)  # or ="full"
+        model.fit(np.array(self.data.normalized_close['close'].to_numpy()).reshape(-1,1), lengths = list(self.data.close['date'].value_counts().sort_index()))
         self.model = model
-        self.transit = model.transit
-        self.mean = model.mean
-        self.var = model.var
+        self.transit = model.transmat_
+        self.mean = model.means_
+        self.var = model.covars_
 
 
     def evaluation(self, datamanager):
-        hidden_states = self.model.predict(np.array(self.data.normalized_close).reshape(-1, 1))
+        hidden_states = self.model.predict(np.array(self.data.normalized_close['close'].to_numpy()).reshape(-1, 1))
         pred = []
         j = -1
         for i in range(len(list(self.data.close['date'].value_counts()))):
             j += list(self.data.close['date'].value_counts())[i]
             hid = hidden_states[j]
-            next_hid = np.argmax(self.model.transmat_[hid])
+            next_hid = np.argmax(self.transit[hid])
             # pred.append(float(model.means_[next_hid]))
-            pred.append(self.data.first_day[i] + float(np.random.normal(self.model.means_[next_hid], self.model.covars_[next_hid][0][0], 1)))
+            pred.append(self.data.first_day[i] + float(np.random.normal(self.mean[next_hid], self.var[next_hid][0][0], 1)))
 
         self.pred = pred
 

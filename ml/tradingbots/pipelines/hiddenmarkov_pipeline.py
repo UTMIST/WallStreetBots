@@ -26,8 +26,6 @@ class HMMPipline(Pipeline):
         start = (datetime.datetime.now(datetime.timezone.utc) - timedelta(days=1)).isoformat()
         end = datetime.datetime.now(datetime.timezone.utc).isoformat()
         num_hidden_states, covar_type, n_iter = 10, 'full', 100
-        data_lst = []
-        model_lst = []
         self.utils()
         buy_list = []
         new_portfolio = {}
@@ -37,8 +35,6 @@ class HMMPipline(Pipeline):
             current_hmm.train(current_data)
             current_hmm.evaluation()
             current_hmm.inference()
-            data_lst.append(current_data)
-            model_lst.append(current_hmm)
 
             # not sure
             if current_hmm.num_uptrend == 1: # stock price goes up
