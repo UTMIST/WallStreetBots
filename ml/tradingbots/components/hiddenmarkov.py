@@ -202,7 +202,7 @@ class HMM():
 
     def train(self, datamanager):
         model = hmm.GaussianHMM(self.num_hidden_states, covariance_type=self.covar_type, n_iter=self.n_iter)  # or ="full"
-        model.fit(np.array(self.data.normalized_close['close'].to_numpy()).reshape(-1,1),
+        model.fit(np.array(self.data.normalized_close['close'].to_numpy()).reshape(-1,1), 
                   lengths=list(self.data.close['date'].value_counts().sort_index()))
         self.model = model
         self.transit = model.transmat_
