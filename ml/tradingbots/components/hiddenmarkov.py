@@ -6,6 +6,7 @@ import alpaca_trade_api as tradeapi
 from alpaca_trade_api.rest import TimeFrame
 from datetime import timedelta
 
+
 class APImanager():  # API manager for Alpaca
     def __init__(self, API_KEY, SECRET_KEY):
         self.BASE_URL = "https://paper-api.alpaca.markets"
@@ -39,7 +40,6 @@ class APImanager():  # API manager for Alpaca
             return bar_prices, [t.to_pydatetime() for t in bar_t]
         except Exception as e:
             return "Failed to get bars from Alpaca: " + str(e)
-
 
     def get_price(self, symbol):
         """
@@ -184,6 +184,7 @@ class DataManager():
             lst.append(last_data)
 
         self.last_datapoint = lst
+
 
 class HMM():
     def __init__(self, data_manager, num_hidden_states, covar_type, n_iter):

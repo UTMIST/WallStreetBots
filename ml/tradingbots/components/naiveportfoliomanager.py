@@ -1,11 +1,10 @@
-import numpy as np
-import pandas as pd
 from backend.settings import BACKEND_ALPACA_ID, BACKEND_ALPACA_KEY
 from .portfoliomanager import PortfolioManager
 
 
 class NaiveHMMPortfolioUpdate(PortfolioManager):
-    def __init__(self, portfolio, data_fetcher, HMMdatafetcher, start, end, HMM, num_hidden_states, covar_type, n_iter, buffer=0.05):
+    def __init__(self, portfolio, data_fetcher, HMMdatafetcher,
+                 start, end, HMM, num_hidden_states, covar_type, n_iter, buffer=0.05):
         """
         Args:
             portfolio: portfolio dictionary contains cash and stocks with qty

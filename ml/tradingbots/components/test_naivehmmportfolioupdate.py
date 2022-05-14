@@ -1,7 +1,6 @@
 import unittest
 from .utils import DummyFetcher
 from ..components.naiveportfoliomanager import NaiveHMMPortfolioUpdate
-import numpy as np
 
 
 class DummyHMM:
@@ -21,6 +20,7 @@ class DummyHMM:
 
     def inference(self, **kwargs):
         return
+
 
 class DummyHMM_fetcher:
     class DummyData:
@@ -48,8 +48,8 @@ class MonteCarloPortfolioUpdateTestCase(unittest.TestCase):
         start = None
         end = None
         num_hidden_states, covar_type, n_iter = None, None, None
-        NHPU = NaiveHMMPortfolioUpdate(self.portfolio, self.data_fetcher, self.DataManager, start, end, self.HMM, num_hidden_states,
-                                       covar_type, n_iter, buffer=buffer)
+        NHPU = NaiveHMMPortfolioUpdate(self.portfolio, self.data_fetcher, self.DataManager,
+                                       start, end, self.HMM, num_hidden_states, covar_type, n_iter, buffer=buffer)
         self.assertEqual(NHPU.total_portfolio_value, 1918)
         self.assertEqual(list(NHPU.price_dict.keys()), ["AAPL", "MSFT", "TSLA"])
         self.assertEqual(list(NHPU.price_dict.values()), [102, 102, 102])

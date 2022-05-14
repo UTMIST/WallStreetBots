@@ -17,5 +17,5 @@ class HMMPipline(Pipeline):
         end = datetime.datetime.now(datetime.timezone.utc).isoformat()
         num_hidden_states, covar_type, n_iter = 10, 'full', 100
         NHPU = NaiveHMMPortfolioUpdate(self.portfolio, data_fetcher, DataManager, start, end, HMM, num_hidden_states,
-                              covar_type, n_iter, buffer=buffer)
+                                       covar_type, n_iter, buffer=buffer)
         return NHPU.rebalance()
