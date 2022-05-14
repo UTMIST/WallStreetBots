@@ -1,13 +1,10 @@
 import numpy as np
 import pandas as pd
-from datetime import datetime, date
+from datetime import datetime
 import hmmlearn.hmm as hmm
-import requests, json
 import alpaca_trade_api as tradeapi
 from alpaca_trade_api.rest import TimeFrame
 from datetime import timedelta
-
-from .portfoliomanager import PortfolioManager
 
 class APImanager():  # API manager for Alpaca
     def __init__(self, API_KEY, SECRET_KEY):
@@ -17,7 +14,7 @@ class APImanager():  # API manager for Alpaca
         self.SECRET_KEY = SECRET_KEY
         self.api = tradeapi.REST(API_KEY, SECRET_KEY, self.BASE_URL, api_version='v2')
 
-    def get_bar(self, symbol, timestep, start, end, price_type="close", adjustment = 'all'):
+    def get_bar(self, symbol, timestep, start, end, price_type="close", adjustment='all'):
         """
         Get a list of prices from latest to oldest with a timestep
 
@@ -33,7 +30,7 @@ class APImanager():  # API manager for Alpaca
           - a list of time associated with each price
         """
         try:
-            bars = self.api.get_bars(symbol, timestep, start, end, adjustment = adjustment).df
+            bars = self.api.get_bars(symbol, timestep, start, end, adjustment=adjustment).df
             if bars.empty:
                 return [], []
             # print(bars)
@@ -42,6 +39,7 @@ class APImanager():  # API manager for Alpaca
             return bar_prices, [t.to_pydatetime() for t in bar_t]
         except Exception as e:
             return "Failed to get bars from Alpaca: " + str(e)
+
 
     def get_price(self, symbol):
         """
@@ -83,6 +81,7 @@ class APImanager():  # API manager for Alpaca
         else:
             return False
 
+
 class DataManager():
     def __init__(self, ALPACA_ID, ALPACA_KEY, tname, start_date, end_date):
         self.ALPACA_ID = ALPACA_ID
@@ -109,7 +108,8 @@ class DataManager():
             end_date_open = datetime.strptime(self.end_date, '%Y-%m-%d').date() + timedelta(days=1)
             str_start_date_open = start_date_open.strftime("%Y-%m-%d")
             str_end_date_open = end_date_open.strftime("%Y-%m-%d")
-            df = self.api.api.get_bars(self.ticker, TimeFrame.Day, str_start_date_open, str_end_date_open, adjustment).df[['open']]  # get data
+            df = self.api.api.get_bars(self.ticker, TimeFrame.Day,
+                                       str_start_date_open, str_end_date_open, adjustment).df[['open']]  # get data
 
             df['timestamp'] = df.index
             df['datetime'] = pd.to_datetime(df['timestamp'])
@@ -121,7 +121,8 @@ class DataManager():
             true_df = df[(df['date'] >= true_start_date) & (df['date'] <= true_end_date)]
             return true_df
         else:
-            df = self.api.api.get_bars(self.ticker, TimeFrame.Minute, self.start_date, self.end_date, adjustment).df[['close']]  # get data
+            df = self.api.api.get_bars(self.ticker, TimeFrame.Minute,
+                                       self.start_date, self.end_date, adjustment).df[['close']]  # get data
 
             df['timestamp'] = df.index
             df['datetime'] = pd.to_datetime(df['timestamp'])
@@ -163,11 +164,11 @@ class DataManager():
         self.first_day = []
         start = 0
         for i in range(len(list(self.close['date'].value_counts().sort_index()))):
-          end = start + list(self.close['date'].value_counts().sort_index())[i]
-          seq = self.close['close'][start:end].to_numpy()
-          self.first_day += [seq[0]]
-          normalized_seq += list(self.normalize_helper(seq))
-          start = end
+            end = start + list(self.close['date'].value_counts().sort_index())[i]
+            seq = self.close['close'][start:end].to_numpy()
+            self.first_day += [seq[0]]
+            normalized_seq += list(self.normalize_helper(seq))
+            start = end
         seq = self.close
 
         self.normalized_close = seq
@@ -183,9 +184,6 @@ class DataManager():
             lst.append(last_data)
 
         self.last_datapoint = lst
-
-
-
 
 class HMM():
     def __init__(self, data_manager, num_hidden_states, covar_type, n_iter):
@@ -203,12 +201,12 @@ class HMM():
 
     def train(self, datamanager):
         model = hmm.GaussianHMM(self.num_hidden_states, covariance_type=self.covar_type, n_iter=self.n_iter)  # or ="full"
-        model.fit(np.array(self.data.normalized_close['close'].to_numpy()).reshape(-1,1), lengths = list(self.data.close['date'].value_counts().sort_index()))
+        model.fit(np.array(self.data.normalized_close['close'].to_numpy()).reshape(-1,1),
+                  lengths=list(self.data.close['date'].value_counts().sort_index()))
         self.model = model
         self.transit = model.transmat_
         self.mean = model.means_
         self.var = model.covars_
-
 
     def evaluation(self, datamanager):
         hidden_states = self.model.predict(np.array(self.data.normalized_close['close'].to_numpy()).reshape(-1, 1))
