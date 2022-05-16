@@ -1,5 +1,7 @@
 from alpaca_trade_api.rest import APIError
 
+from backend.tradingbot.models import StockInstance, Stock, Company
+
 
 def validate_backend():
     from backend.settings import BACKEND_ALPACA_ID, BACKEND_ALPACA_KEY
