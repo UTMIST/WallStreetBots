@@ -17,8 +17,8 @@ def login(request):
         return render(request, 'accounts/login.html')
 
 
-@login_required
-def dashboard(request):
+def get_user_information(request):
+    # this function will request and sync user information from alpaca given the correct credentials
     user = request.user
     user_details = sync_alpaca(user)  # sync the user with Alpaca and extract details
     auth0user = user.social_auth.get(provider='auth0')
@@ -48,8 +48,16 @@ def dashboard(request):
             'orders': user_details['orders'],
             'strategy': user_details['strategy'],
             'percent_change': user_details['portfolio_percent_change'],
+            'dollar_change': user_details['portfolio_dollar_change'],
+            # change direction is used to determine if the price is going positive or negative
             'change_direction': user_details['portfolio_change_direction']
         }
+        return user, userdata, auth0user, user_details
+
+
+@login_required
+def dashboard(request):
+    user, userdata, auth0user, user_details = get_user_information(request)
     # managing forms
     from backend.auth0login.forms import CredentialForm, OrderForm, StrategyForm
     credential_form = CredentialForm(request.POST or None)
@@ -110,12 +118,72 @@ def dashboard(request):
 
 @login_required
 def orders(request):
-    return render(request, 'home/page-not-implemented.html')  # 'home/orders.html')
+    user, userdata, auth0user, user_details = get_user_information(request)
+    # managing forms
+    from backend.auth0login.forms import CredentialForm, OrderForm, StrategyForm
+    credential_form = CredentialForm(request.POST or None)
+    order_form = OrderForm(request.POST or None)
+    strategy_form = StrategyForm(request.POST or None)
+    if request.method == 'POST':
+        # let user input their Alpaca API information
+        if 'submit_credential' in request.POST:
+            if credential_form.is_valid():
+                if hasattr(user, 'credential'):
+                    user.credential.alpaca_id = credential_form.get_id()
+                    user.credential.alpaca_key = credential_form.get_key()
+                    user.credential.save()
+                else:
+                    from .models import Credential
+                    cred = Credential(user=request.user, alpaca_id=credential_form.get_id(),
+                                      alpaca_key=credential_form.get_key())
+                    cred.save()
+                return HttpResponseRedirect('/')
+
+        if 'submit_order' in request.POST:
+            if order_form.is_valid():
+                response = order_form.place_order(user, user_details)
+                order_form = OrderForm()
+                #  update order for display
+                from backend.tradingbot.models import Order
+                userdata["orders"] = [order.display_order() for order in
+                                      Order.objects.filter(user=user).order_by('-timestamp').iterator()]
+                return render(request, 'home/index.html', {
+                    'credential_form': credential_form,
+                    'order_form': order_form,
+                    'strategy_form': StrategyForm(None),
+                    'auth0User': auth0user,
+                    'userdata': userdata,
+                    'order_submit_form_response': response,
+                })
+
+        if 'submit_strategy' in request.POST:
+            if strategy_form.is_valid():
+                # here for some reason form.cleaned_data changed from type dict to
+                # type tuple. I tried to find the reason but it didn't seem to caused by
+                # our code. Might be and django bug
+                rebalance_strategy = strategy_form.cleaned_data[0]
+                optimization_strategy = strategy_form.cleaned_data[1]
+                user.portfolio.rebalancing_strategy = rebalance_strategy
+                user.portfolio.optimization_strategy = optimization_strategy
+                user.portfolio.save()
+                return HttpResponseRedirect('/')
+    return render(request, 'home/orders.html', {
+        'credential_form': credential_form,
+        'order_form': order_form,
+        'strategy_form': strategy_form,
+        'auth0User': auth0user,
+        'userdata': userdata,
+    })
 
 
 @login_required
 def positions(request):
-    return render(request, 'home/page-not-implemented.html')  # 'home/positions.html')
+    user, userdata, auth0user, user_details = get_user_information(request)
+    return render(request, 'home/positions.html', {
+        'auth0User': auth0user,
+        'userdata': userdata,
+    })
+
 
 
 @login_required

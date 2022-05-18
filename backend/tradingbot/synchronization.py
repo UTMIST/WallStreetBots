@@ -58,6 +58,7 @@ def sync_alpaca(user):  # noqa: C901
     user_details['long_portfolio_value'] = str(round(float(account.long_market_value), 2))
     user_details['short_portfolio_value'] = str(round(float(account.short_market_value), 2))
     user_details['portfolio_percent_change'] = str(round((float(account.portfolio_value) - float(account.last_equity))/float(account.last_equity), 2))
+    user_details['portfolio_dollar_change'] = str(round((float(account.portfolio_value) - float(account.last_equity))))
 
     if (float(account.portfolio_value) - float(account.last_equity)) >= 0:
         user_details['portfolio_change_direction'] = "positive"
@@ -66,12 +67,14 @@ def sync_alpaca(user):  # noqa: C901
     else:
         user_details['portfolio_change_direction'] = "error"
 
+    user_details['portfolio_percent_change'] = str(
+        round((float(account.portfolio_value) - float(account.last_equity)) / float(account.last_equity), 2))
     # get portfolio information
     portfolio = api.get_positions()
 
     # non-user specific synchronization. e.g. add new company, new stock if it didn't exist
     for position in portfolio:
-        # print(position)
+        #print(position)
         sync_database_company_stock(position.symbol)
 
     #print(account)
