@@ -50,7 +50,7 @@ class MonteCarloMASharpeRatioStrategy(Strategy):
         Returns:
             actions:    list of action objects
         """
-        from pipelines.monte_carlo_w_ma import MonteCarloMovingAveragePipline
+        from .pipelines.monte_carlo_w_ma import MonteCarloMovingAveragePipline
         pipeline = MonteCarloMovingAveragePipline(name=self.name, portfolio=portfolio)
         actions = pipeline.rebalance(order_type='M')
         return actions
