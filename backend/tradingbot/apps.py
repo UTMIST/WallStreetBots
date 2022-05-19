@@ -25,13 +25,13 @@ def create_portfolio_dictionary(user):
 
 def start_pipelines():
     from django.contrib.auth.models import User
-    from ml.tradingbots.pipelines.monte_carlo_w_ma import MonteCarloMovingAveragePipline
+    # from ml.tradingbots.pipelines.monte_carlo_w_ma import MonteCarloMovingAveragePipline
     from ml.tradingbots.trader import MonteCarloMASharpeRatioStrategy
     # TODO: dynamically get the right strategy
-    rebalancing_strategies = {
-        "monte_carlo": MonteCarloMASharpeRatioStrategy,
-        "hmm": None
-    }
+    # rebalancing_strategies = {
+    #     "monte_carlo": MonteCarloMASharpeRatioStrategy,
+    #     "hmm": None
+    # }
     users_to_actions = {}
     for user in User.objects.all():
         if user.portfolio:
