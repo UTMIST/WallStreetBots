@@ -1,43 +1,54 @@
 from django.apps import AppConfig
 from apscheduler.schedulers.background import BackgroundScheduler
+from backend.tradingbot.apiutility import place_general_order
+from backend.tradingbot.synchronization import sync_alpaca
 
 
-def create_portfolio_dictionary(portfolio):
+def create_portfolio_dictionary(user):
     from .models import StockInstance
+    sync_alpaca(user)
+    portfolio = user.portfolio
     result = {'cash': float(portfolio.cash)}
     stock_instances = StockInstance.objects.filter(portfolio=portfolio)
-    result['stocks'] = {}
-    for stock_instances in stock_instances:
-        result['stocks'][stock_instances.stock.company.ticker] = float(stock_instances.quantity)
-    return result
-
+    # structure to return
     # {
     #   cash: float,
     #   stocks: {
     #       ticker: qty
     #   }
     # }
+    result['stocks'] = {}
+    for stock_instances in stock_instances:
+        result['stocks'][stock_instances.stock.company.ticker] = float(stock_instances.quantity)
+    return result
 
 
 def start_pipelines():
     from django.contrib.auth.models import User
     from ml.tradingbots.pipelines.monte_carlo_w_ma import MonteCarloMovingAveragePipline
     from ml.tradingbots.trader import MonteCarloMASharpeRatioStrategy
+    # TODO: dynamically get the right strategy
     rebalancing_strategies = {
         "monte_carlo": MonteCarloMASharpeRatioStrategy,
         "hmm": None
     }
-    pipelines = []
     users_to_actions = {}
     for user in User.objects.all():
         if user.portfolio:
             strat = MonteCarloMASharpeRatioStrategy("Name")
-            actions = strat.get_actions(create_portfolio_dictionary(user.portfolio))
-            users_to_actions[user.username] = actions
+            actions = strat.get_actions(create_portfolio_dictionary(user))
+            users_to_actions[user] = actions
     for user, actions in users_to_actions.items():
         for action in actions:
-            # TODO: place order based on action
-            pass
+            place_general_order(
+                user=user,
+                user_details=sync_alpaca(user),
+                ticker=action.ticker,
+                quantity=action.quantity,
+                transaction_type=action.transaction_type,
+                order_type=action.order_type,
+                time_in_force="day"
+            )
 
 
 class TradingbotConfig(AppConfig):
@@ -46,7 +57,5 @@ class TradingbotConfig(AppConfig):
 
     def ready(self):
         scheduler = BackgroundScheduler()
-        # TODO: change this interval from 5 seconds to something more reasonable
-        # currently 5 seconds to make it easy to check that it is working
         scheduler.add_job(start_pipelines, 'interval', seconds=60*60*24)
         scheduler.start()
