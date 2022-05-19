@@ -43,8 +43,12 @@ class Pipeline:
             qty2 = PostP[key] if key in PostP.keys() else 0
             qty = qty2 - qty1
             if get_transaction_type(qty):
-                return Action(order_type=order_type, transaction_type=get_transaction_type(qty), ticker=key,
-                              quantity=abs(qty))
+                return Action(
+                    order_type=order_type,
+                    transaction_type=get_transaction_type(qty),
+                    ticker=key,
+                    quantity=abs(qty)
+                )
             else:
                 return False
 
