@@ -37,6 +37,7 @@ def start_pipelines():
     for user, actions in users_to_actions.items():
         for action in actions:
             # TODO: place order based on action
+            pass
 
 
 class TradingbotConfig(AppConfig):
