@@ -39,7 +39,7 @@ def dashboard(request):
             'alpaca_key': " " + "*" * 10,
             'total_equity': user_details['equity'],
             'buy_power': user_details['buy_power'],
-            'portfolio': user_details['portfolio'],
+            'portfolio': user_details['display_portfolio'],
             'cash': user_details['cash'],
             'tradable_cash': user_details['usable_cash'],
             'currency': user_details['currency'],
@@ -90,10 +90,8 @@ def dashboard(request):
                 # here for some reason form.cleaned_data changed from type dict to
                 # type tuple. I tried to find the reason but it didn't seem to caused by
                 # our code. Might be and django bug
-                rebalance_strategy = strategy_form.cleaned_data[0]
-                optimization_strategy = strategy_form.cleaned_data[1]
-                user.portfolio.rebalancing_strategy = rebalance_strategy
-                user.portfolio.optimization_strategy = optimization_strategy
+                strategy = strategy_form.cleaned_data
+                user.portfolio.strategy = strategy
                 user.portfolio.save()
                 return HttpResponseRedirect('/')
 

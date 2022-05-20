@@ -71,14 +71,19 @@ def sync_alpaca(user):  # noqa: C901
     # 1) synchronizes user's stock instances
     # brute force way to delete and add all new stocks
     from backend.tradingbot.models import StockInstance, Stock, Company, Portfolio
+    from django.db.models import Q
     if not hasattr(user, 'portfolio'):
         new_portfolio = Portfolio(name='default-1', user=user, cash=0)
         new_portfolio.save()
-    if StockInstance.objects.filter(user=user, portfolio=user.portfolio).exists():
-        StockInstance.objects.filter(user=user, portfolio=user.portfolio).delete()
+    # delete all instances except those with 0 quantity
+    if StockInstance.objects.filter(~Q(quantity=0.00), user=user, portfolio=user.portfolio).exists():
+        StockInstance.objects.filter(~Q(quantity=0.00), user=user, portfolio=user.portfolio).delete()
     for position in portfolio:
         company = Company.objects.get(ticker=position.symbol)
         stock = Stock.objects.get(company=company)
+        # delete 0 quantity stock if that stock appears
+        if StockInstance.objects.filter(stock=stock, user=user, portfolio=user.portfolio).exists():
+            StockInstance.objects.filter(stock=stock, user=user, portfolio=user.portfolio).delete()
         instance = StockInstance(stock=stock, portfolio=user.portfolio, quantity=position.qty, user=user)
         instance.save()
 
@@ -127,8 +132,49 @@ def sync_alpaca(user):  # noqa: C901
                                    order_type=order.order_type, transaction_type=order.side, status="A",
                                    client_order_id=order.client_order_id)
 
+    # iterate through all 0 qty stock and add to portfolio
+    display_portfolio = []
+    for position in portfolio:
+        display_portfolio.append(position)
+    if StockInstance.objects.filter(quantity=0.00, user=user, portfolio=user.portfolio).exists():
+        backend_api = validate_backend()
+        from alpaca_trade_api import TimeFrame
+        import datetime
+        from datetime import timedelta
+        start = (datetime.datetime.now(datetime.timezone.utc) - timedelta(days=3)).strftime('%Y-%m-%d')
+        end = (datetime.datetime.now(datetime.timezone.utc) - timedelta(days=1)).strftime('%Y-%m-%d')
+        for stock_instance in StockInstance.objects.filter(quantity=0.00, user=user, portfolio=user.portfolio):
+            ticker = str(stock_instance.stock)
+            _, price = backend_api.get_price(ticker)
+            bar_prices, _ = backend_api.get_bar(symbol=ticker, timestep=TimeFrame.Day, start=start,
+                                                end=end, price_type="close", adjustment='all')
+            cur_price = str(price)
+            last_day_price = str(bar_prices[0])
+            display_dict = {
+                'asset_class': 'NA',
+                'asset_id': 'NA',
+                'asset_marginable': True,
+                'avg_entry_price': 'NA',
+                'change_today': 'NA',
+                'cost_basis': 'NA',
+                'current_price': cur_price,
+                'exchange': 'NA',
+                'lastday_price': last_day_price,
+                'market_value': 'NA',
+                'qty': '0.00',
+                'qty_available': '0',
+                'side': 'NA',
+                'symbol': ticker,
+                'unrealized_intraday_pl': 'NA',
+                'unrealized_intraday_plpc': 'NA',
+                'unrealized_pl': 'NA',
+                'unrealized_plpc': 'NA'
+            }
+            display_portfolio.append(display_dict)
+
     user_details['usable_cash'] = str(round(usable_cash, 2))
     user_details['portfolio'] = portfolio
+    user_details['display_portfolio'] = display_portfolio
     user_details['orders'] = [order.display_order() for order in
                               Order.objects.filter(user=user).order_by('-timestamp').iterator()]
 
@@ -141,9 +187,6 @@ def sync_alpaca(user):  # noqa: C901
     else:
         user.portfolio.cash = float(user_details['usable_cash'])
         user.portfolio.save()
-    user_details['strategy'] = {
-        'rebalance': user.portfolio.rebalancing_strategy,
-        'optimization': user.portfolio.optimization_strategy,
-    }
+    user_details['strategy'] = user.portfolio.get_strategy_display()
 
     return user_details
