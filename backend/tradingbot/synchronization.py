@@ -57,19 +57,26 @@ def sync_alpaca(user):  # noqa: C901
     user_details['currency'] = account.currency
     user_details['long_portfolio_value'] = str(round(float(account.long_market_value), 2))
     user_details['short_portfolio_value'] = str(round(float(account.short_market_value), 2))
+    user_details['portfolio_percent_change'] = str(round((float(account.portfolio_value) - float(account.last_equity))
+                                                         / float(account.last_equity), 2))
+    user_details['portfolio_dollar_change'] = str(round((float(account.portfolio_value) - float(account.last_equity))))
 
+    if (float(account.portfolio_value) - float(account.last_equity)) >= 0:
+        user_details['portfolio_change_direction'] = "positive"
+    elif (float(account.portfolio_value) - float(account.last_equity)) < 0:
+        user_details['portfolio_change_direction'] = "negative"
+    else:
+        user_details['portfolio_change_direction'] = "error"
+
+    user_details['portfolio_percent_change'] = str(
+        round((float(account.portfolio_value) - float(account.last_equity)) / float(account.last_equity), 2))
     # get portfolio information
     portfolio = api.get_positions()
 
     # non-user specific synchronization. e.g. add new company, new stock if it didn't exist
     for position in portfolio:
-        # print(position)
         sync_database_company_stock(position.symbol)
 
-    # print(account)
-    # user-specific synchronization
-    # 1) synchronizes user's stock instances
-    # brute force way to delete and add all new stocks
     from backend.tradingbot.models import StockInstance, Stock, Company, Portfolio
     from django.db.models import Q
     if not hasattr(user, 'portfolio'):
@@ -125,8 +132,8 @@ def sync_alpaca(user):  # noqa: C901
             # print(f"{order.symbol}, {price}")
             usable_cash -= float(price) * float(order.qty)
         # sync open orders to database if not already exist
-        if not order.client_order_id.isnumeric() or not Order.objects.filter(user=user,
-                                                                             order_number=order.client_order_id).exists():
+        if not order.client_order_id.isnumeric() or \
+                not Order.objects.filter(user=user, order_number=order.client_order_id).exists():
             if not Order.objects.filter(user=user, client_order_id=order.client_order_id).exists():
                 create_local_order(user=user, ticker=order.symbol, quantity=float(order.qty),
                                    order_type=order.order_type, transaction_type=order.side, status="A",
