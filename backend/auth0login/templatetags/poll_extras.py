@@ -22,3 +22,9 @@ def find_percent(change_today):
 def compare(value, arg):
     if float(value) > float(arg):
         return True
+
+
+@register.filter
+def check_positive(value):
+    if float(value) > 0:
+        return True

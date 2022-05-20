@@ -8,6 +8,53 @@
 
 {% block content %}
 
+<!-- include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+
+    var config = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [
+            {{ userdata.long_portfolio_value}}, {{userdata.short_portfolio_value}}, {{userdata.tradable_cash}}
+          ],
+
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)'
+          ],
+
+          label: 'Total Asset'
+        }],
+
+        labels: ['Long Portfolio Value', 'Short Portfolio Value', 'Tradable Cash'],
+      },
+      options: {
+        responsive: true
+      }
+    };
+
+    window.onload = function() {
+      var ctx = document.getElementById('asset-chart').getContext('2d');
+      window.myPie = new Chart(ctx, config);
+    };
+
+</script>
+
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div id="container" style="width: 10%;">
+                <canvas id="asset-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -72,45 +119,55 @@
                                     <h6 class="mb-0 text-sm">{{ position.qty }}</h6>
                                 </td>
                                 <td class="align-middle text-center text-sm">
-                                    <span class="text-xs font-weight-bold"> $ {{ position.current_price }} </span>
+                                    <h6 class="text-xs font-weight-bold"> $ {{ position.current_price }} </h6>
                                 </td>
                                 <td class="align-middle text-center text-sm">
-                                    <span class="text-xs font-weight-bold"> $ {{ position.avg_entry_price }} </span>
+                                    <h6 class="text-xs font-weight-bold"> $ {{ position.avg_entry_price }} </h6>
                                 </td>
 
                                 <td class="align-middle text-center">
-                                    <span class="text-xs font-weight-bold">$ {{ position.cost_basis }} </span>
+                                    <h6 class="text-xs font-weight-bold">$ {{ position.cost_basis }} </h6>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <span class="text-xs font-weight-bold"> $ {{ position.market_value }}</span>
+                                    <h6 class="text-xs font-weight-bold"> $ {{ position.market_value }}</h6>
                                 </td>
                                 <td class="align-middle text-center">
-                                    {% if position.lastday_price >= position.current_price %}
-                                        <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> {{ position.change_today | find_percent}}%</span>
-                                    {% elif position.lastday_price < position.current_price %}
-                                        <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> {{ position.change_today | find_percent }}%</span>
+                                    {% with bool=position.change_today|check_positive %}
+                                    {% if bool %}
+                                     <h6 class="text-success mb-0 text-sm" >{{ position.change_today | find_percent}}%</h6>
+                                    {% else %}
+                                     <h6 class="text-danger text-sm font-weight-bolder"> {{ position.change_today | find_percent }}%</h6>
                                     {% endif %}
+                                    {% endwith %}
                                 </td>
                                 <td class="align-middle text-center">
-                                    {% if position.lastday_price >= position.current_price %}
-                                        <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> ${{ position.unrealized_intraday_pl }}</span>
-                                    {% elif position.lastday_price < position.current_price %}
-                                        <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> ${{ position.unrealized_intraday_pl }}</span>
+                                    {% with bool=position.change_today|check_positive %}
+                                    {% if bool %}
+                                    <h6 class="text-success text-sm font-weight-bolder"> ${{ position.unrealized_intraday_pl }}</h6>
+                                    {% else %}
+                                    <h6 class="text-danger text-sm font-weight-bolder"> ${{ position.unrealized_intraday_pl }}</h6>
                                     {% endif %}
+                                    {% endwith %}
                                 </td>
+
                                 <td class="align-middle text-center">
-                                    {% if position.avg_entry_price >= position.current_price %}
-                                        <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> {{ position.unrealized_plpc | find_percent}} %</span>
-                                    {% elif position.avg_entry_price < position.current_price %}
-                                        <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> {{ position.unrealized_plpc | find_percent}} %</span>
+                                    {% with bool=position.unrealized_pl|check_positive %}
+                                    {% if bool %}
+                                    <h6 class="text-success text-sm font-weight-bolder"> {{ position.unrealized_plpc | find_percent}} %</h6>
+                                    {% else %}
+                                    <h6 class="text-danger text-sm font-weight-bolder"> {{ position.unrealized_plpc | find_percent}} %</h6>
                                     {% endif %}
+                                    {% endwith %}
                                 </td>
+
                                 <td class="align-middle text-center">
-                                    {% if position.avg_entry_price >= position.current_price %}
-                                        <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> $ {{ position.unrealized_pl}}</span>
-                                    {% elif position.avg_entry_price < position.current_price %}
-                                        <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> $ {{ position.unrealized_pl }}</span>
+                                    {% with bool=position.unrealized_pl|check_positive %}
+                                    {% if bool %}
+                                    <h6 class="text-success text-sm font-weight-bolder"> $ {{ position.unrealized_pl}}</h6>
+                                    {% else %}
+                                    <h6 class="text-danger text-sm font-weight-bolder"> $ {{ position.unrealized_pl }}</h6>
                                     {% endif %}
+                                    {% endwith %}
                                 </td>
                             </tr>
                             {% endfor %}
