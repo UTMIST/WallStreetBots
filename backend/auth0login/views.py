@@ -52,7 +52,7 @@ def get_user_information(request):
             # change direction is used to determine if the price is going positive or negative
             'change_direction': user_details['portfolio_change_direction']
         }
-        return user, userdata, auth0user, user_details
+    return user, userdata, auth0user, user_details
 
 
 @login_required

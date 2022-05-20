@@ -155,27 +155,27 @@ def sync_alpaca(user):  # noqa: C901
             _, price = backend_api.get_price(ticker)
             bar_prices, _ = backend_api.get_bar(symbol=ticker, timestep=TimeFrame.Day, start=start,
                                                 end=end, price_type="close", adjustment='all')
-            cur_price = str(price)
-            last_day_price = str(bar_prices[0])
+            cur_price = price
+            last_day_price = bar_prices[0]
             display_dict = {
                 'asset_class': 'NA',
                 'asset_id': 'NA',
                 'asset_marginable': True,
-                'avg_entry_price': 'NA',
-                'change_today': 'NA',
-                'cost_basis': 'NA',
-                'current_price': cur_price,
+                'avg_entry_price': '0',
+                'change_today': str((cur_price-last_day_price)/last_day_price),
+                'cost_basis': '0',
+                'current_price': str(cur_price),
                 'exchange': 'NA',
                 'lastday_price': last_day_price,
-                'market_value': 'NA',
+                'market_value': '0',
                 'qty': '0.00',
                 'qty_available': '0',
                 'side': 'NA',
                 'symbol': ticker,
-                'unrealized_intraday_pl': 'NA',
-                'unrealized_intraday_plpc': 'NA',
-                'unrealized_pl': 'NA',
-                'unrealized_plpc': 'NA'
+                'unrealized_intraday_pl': '0',
+                'unrealized_intraday_plpc': '0',
+                'unrealized_pl': '0',
+                'unrealized_plpc': '0'
             }
             display_portfolio.append(display_dict)
 
