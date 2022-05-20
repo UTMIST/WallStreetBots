@@ -1,5 +1,5 @@
 from backend.settings import BACKEND_ALPACA_ID, BACKEND_ALPACA_KEY
-from pipeline import Pipeline
+from .pipeline import Pipeline
 from ..components.metrics import MovingAverageSharpeRatio
 from ..components.montecarlo import MonteCarloPortfolioUpdate
 from ..components.utils import AlpacaFetcher

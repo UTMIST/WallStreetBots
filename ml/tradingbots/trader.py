@@ -41,7 +41,7 @@ class Strategy:
         return []
 
 
-class MonteCarloMAShapeRatioStrategy(Strategy):
+class MonteCarloMASharpeRatioStrategy(Strategy):
     def get_actions(self, portfolio):
         """
         Args:
@@ -50,9 +50,22 @@ class MonteCarloMAShapeRatioStrategy(Strategy):
         Returns:
             actions:    list of action objects
         """
-        from pipelines.monte_carlo_w_ma import MonteCarloMovingAveragePipline
+        from .pipelines.monte_carlo_w_ma import MonteCarloMovingAveragePipline
         pipeline = MonteCarloMovingAveragePipline(name=self.name, portfolio=portfolio)
         actions = pipeline.rebalance(order_type='M')
         return actions
 
-#  use django.setup to access database
+
+class HMMNaiveStrategy(Strategy):
+    def get_actions(self, portfolio):
+        """
+        Args:
+            portfolio:   dict in the form {cash: QTY, stocks: {SYMB1:QTY, SYMB2:QTY}}
+
+        Returns:
+            actions:    list of action objects
+        """
+        from .pipelines.hiddenmarkov_pipeline import HMMPipline
+        pipeline = HMMPipline(name=self.name, portfolio=portfolio)
+        actions = pipeline.rebalance(order_type='M')
+        return actions

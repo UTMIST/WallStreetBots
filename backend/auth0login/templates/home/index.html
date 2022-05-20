@@ -119,8 +119,7 @@
                   <div class="d-flex flex-column h-100">
                       <h4 class="">Strategy</h4>
                       <p class="mb-5"> Automatic Trading: Enabled<br>
-                          Rebalancing Strategy:   {{userdata.strategy.rebalance}} <br>
-                        Optimization Metric:   {{userdata.strategy.optimization}} <br>
+                          Rebalancing Strategy:   {{userdata.strategy}} <br>
                     </p>
                   </div>
               </div>
@@ -134,11 +133,7 @@
                         {% csrf_token %}
                         <h6>Rebalancing Strategy</h6>
                         <div class="">
-                            {{ strategy_form.rebalancing_strategy }}
-                        </div>
-                        <h6>Optimization Metric</h6>
-                        <div class="">
-                            {{ strategy_form.optimization_strategy }}
+                            {{ strategy_form.strategy }}
                         </div>
                           <button type="submit" name="submit_strategy" class="btn bg-gradient-info w-50 mt-2 mb-0">Update Strategy</button>
                 </form>
