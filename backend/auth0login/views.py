@@ -1,5 +1,4 @@
 from urllib.parse import urlencode
-
 from django.conf import settings
 from django.contrib.auth import logout as log_out
 from django.contrib.auth.decorators import login_required
@@ -8,13 +7,13 @@ from django.shortcuts import render, redirect
 
 from backend.tradingbot.synchronization import sync_alpaca
 
+
 def login(request):
     user = request.user
     if user.is_authenticated:
         return redirect(dashboard)
     else:
         return render(request, 'accounts/login.html')
-
 
 
 def get_user_information(request):
@@ -125,7 +124,6 @@ def orders(request):
     order_form = OrderForm(request.POST or None)
     strategy_form = StrategyForm(request.POST or None)
     if request.method == 'POST':
-        # let user input their Alpaca API information
         if 'submit_credential' in request.POST:
             if credential_form.is_valid():
                 if hasattr(user, 'credential'):
