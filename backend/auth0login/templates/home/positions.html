@@ -141,7 +141,7 @@
                                     {% endwith %}
                                 </td>
                                 <td class="align-middle text-center">
-                                    {% with bool=position.change_today|check_positive %}
+                                    {% with bool=position.unrealized_intraday_pl|check_positive %}
                                     {% if bool %}
                                     <h6 class="text-success text-sm font-weight-bolder"> ${{ position.unrealized_intraday_pl }}</h6>
                                     {% else %}
