@@ -71,14 +71,19 @@ def sync_alpaca(user):  # noqa: C901
     # 1) synchronizes user's stock instances
     # brute force way to delete and add all new stocks
     from backend.tradingbot.models import StockInstance, Stock, Company, Portfolio
+    from django.db.models import Q
     if not hasattr(user, 'portfolio'):
         new_portfolio = Portfolio(name='default-1', user=user, cash=0)
         new_portfolio.save()
-    if StockInstance.objects.filter(user=user, portfolio=user.portfolio).exists():
-        StockInstance.objects.filter(user=user, portfolio=user.portfolio).delete()
+    # delete all instances except those with 0 quantity
+    if StockInstance.objects.filter(~Q(quantity=0.00), user=user, portfolio=user.portfolio).exists():
+        StockInstance.objects.filter(~Q(quantity=0.00), user=user, portfolio=user.portfolio).delete()
     for position in portfolio:
         company = Company.objects.get(ticker=position.symbol)
         stock = Stock.objects.get(company=company)
+        # delete 0 quantity stock if that stock appears
+        if StockInstance.objects.filter(stock=stock, user=user, portfolio=user.portfolio).exists():
+            StockInstance.objects.filter(stock=stock, user=user, portfolio=user.portfolio).delete()
         instance = StockInstance(stock=stock, portfolio=user.portfolio, quantity=position.qty, user=user)
         instance.save()
 
