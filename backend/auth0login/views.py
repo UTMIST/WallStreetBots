@@ -16,6 +16,7 @@ def login(request):
         return render(request, 'accounts/login.html')
 
 
+@login_required()
 def get_user_information(request):
     # this function will request and sync user information from alpaca given the correct credentials
     user = request.user
