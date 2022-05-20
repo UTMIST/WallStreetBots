@@ -54,24 +54,16 @@ class OrderForm(forms.Form):
 
 
 class StrategyForm(forms.Form):
-    BALANCINGSTRATEGY = [
+    STRATEGY = [
         ('manual', 'Manual portfolio management'),
-        ('monte_carlo', 'Monte Carlo portfolio rebalancing'),
+        ('hmm_naive_even_split', 'HMM model prediction + Even split portfolio'),  # HMMNaiveStrategy()
+        ('ma_sharp_ratio_monte_carlo',
+         'Moving average + Sharpe ratio Monte Carlo simulation'),  # MonteCarloMASharpeRatioStrategy()
+        ('hmm_sharp_ratio_monte_carlo', 'HMM model prediction + Sharpe ratio Monte Carlo simulation'),  # TODO
     ]
-    OPTIMIZATIONSTRATEGY = [
-        ('none', 'None'),
-        ('ma_sharp_ratio', 'Sharp ratio based on moving average'),
-    ]
-    rebalancing_strategy = forms.ChoiceField(choices=BALANCINGSTRATEGY, help_text='Portfolio Rebalancing Strategy')
-    optimization_strategy = forms.ChoiceField(choices=OPTIMIZATIONSTRATEGY, help_text='Optimization Strategy')
+    strategy = forms.ChoiceField(choices=STRATEGY, help_text='Portfolio Rebalancing Strategy')
 
     def clean(self):
         # print('inside: ', type(self.cleaned_data), self.cleaned_data)
-        rebalancing_strategy = self.cleaned_data['rebalancing_strategy']
-        optimization_strategy = self.cleaned_data['optimization_strategy']
-        if rebalancing_strategy == 'manual' and optimization_strategy != 'none':
-            raise ValidationError('Manual mode must not have an optimization strategy')
-        if rebalancing_strategy == 'monte_carlo' and optimization_strategy == 'none':
-            raise ValidationError('Monte Carlo portfolio management strategy must have a optimization strategy')
-        # print('inside2: ', type(self.cleaned_data), self.cleaned_data)
-        return rebalancing_strategy, optimization_strategy
+        strategy = self.cleaned_data['strategy']
+        return strategy
