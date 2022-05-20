@@ -129,6 +129,7 @@ def sync_alpaca(user):  # noqa: C901
 
     user_details['usable_cash'] = str(round(usable_cash, 2))
     user_details['portfolio'] = portfolio
+    print("debug", type(portfolio), portfolio)
     user_details['orders'] = [order.display_order() for order in
                               Order.objects.filter(user=user).order_by('-timestamp').iterator()]
 
