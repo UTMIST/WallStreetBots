@@ -58,7 +58,7 @@ def sync_alpaca(user):  # noqa: C901
     user_details['long_portfolio_value'] = str(round(float(account.long_market_value), 2))
     user_details['short_portfolio_value'] = str(round(float(account.short_market_value), 2))
     user_details['portfolio_percent_change'] = str(round((float(account.portfolio_value) - float(account.last_equity))
-                                                         /float(account.last_equity), 2))
+                                                         / float(account.last_equity), 2))
     user_details['portfolio_dollar_change'] = str(round((float(account.portfolio_value) - float(account.last_equity))))
 
     if (float(account.portfolio_value) - float(account.last_equity)) >= 0:
