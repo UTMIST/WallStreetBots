@@ -90,7 +90,7 @@ def dashboard(request):
                 # here for some reason form.cleaned_data changed from type dict to
                 # type tuple. I tried to find the reason but it didn't seem to caused by
                 # our code. Might be and django bug
-                strategy = strategy_form.cleaned_data[0]
+                strategy = strategy_form.cleaned_data
                 user.portfolio.strategy = strategy
                 user.portfolio.save()
                 return HttpResponseRedirect('/')

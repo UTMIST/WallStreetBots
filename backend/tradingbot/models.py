@@ -171,9 +171,10 @@ def mapping(key, choices):
 class Portfolio(models.Model):
     STRATEGY = [
         ('manual', 'Manual portfolio management'),
-        ('hmm_naive_even_split', 'HMM model prediction + Even split portfolio'),
-        ('ma_sharp_ratio_monte_carlo', 'Moving average + Sharpe ratio Monte Carlo simulation'),
-        ('hmm_sharp_ratio_monte_carlo', 'HMM model prediction + Sharpe ratio Monte Carlo simulation'),
+        ('hmm_naive_even_split', 'HMM model prediction + Even split portfolio'),  # HMMNaiveStrategy()
+        ('ma_sharp_ratio_monte_carlo',
+         'Moving average + Sharpe ratio Monte Carlo simulation'),  # MonteCarloMASharpeRatioStrategy()
+        ('hmm_sharp_ratio_monte_carlo', 'HMM model prediction + Sharpe ratio Monte Carlo simulation'),  # TODO
     ]
     """Portfolio for a user"""
     name = models.CharField(max_length=100, blank=False, help_text="Portfolio name")
