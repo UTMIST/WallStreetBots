@@ -24,6 +24,7 @@ def get_user_information(request):
     auth0user = user.social_auth.get(provider='auth0')
     alpaca_id = user.credential.alpaca_id if hasattr(user, 'credential') else "no alpaca id"
     alpaca_key = user.credential.alpaca_key if hasattr(user, 'credential') else "no alpaca key"
+
     if user_details is None:
         userdata = {
             'name': user.first_name,
@@ -175,8 +176,35 @@ def orders(request):
 
 @login_required
 def positions(request):
+    from backend.auth0login.forms import WatchListForm, StrategyForm
     user, userdata, auth0user, user_details = get_user_information(request)
+    watchlist_form = WatchListForm(request.POST or None)
+    strategy_form = StrategyForm(request.POST or None)
+    if request.method == 'POST':
+        if 'add_to_watchlist' in request.POST:
+            if watchlist_form.is_valid():
+                response = watchlist_form.add_to_watchlist(user)
+                return render(request, 'home/positions.html', {
+                    'watchlist_form': watchlist_form,
+                    'strategy_form': strategy_form,
+                    'watchlist_form_response': response,
+                    'auth0User': auth0user,
+                    'userdata': userdata,
+                })
+
+        if 'submit_strategy' in request.POST:
+            if strategy_form.is_valid():
+                # here for some reason form.cleaned_data changed from type dict to
+                # type tuple. I tried to find the reason but it didn't seem to caused by
+                # our code. Might be and django bug
+                strategy = strategy_form.cleaned_data
+                user.portfolio.strategy = strategy
+                user.portfolio.save()
+                return HttpResponseRedirect('positions')
+
     return render(request, 'home/positions.html', {
+        'watchlist_form': watchlist_form,
+        'strategy_form': strategy_form,
         'auth0User': auth0user,
         'userdata': userdata,
     })

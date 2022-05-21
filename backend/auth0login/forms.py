@@ -67,3 +67,18 @@ class StrategyForm(forms.Form):
         # print('inside: ', type(self.cleaned_data), self.cleaned_data)
         strategy = self.cleaned_data['strategy']
         return strategy
+
+
+class WatchListForm(forms.Form):
+    """manual orders from user"""
+
+    ticker = forms.CharField(help_text='Stock ticker')
+
+    def add_to_watchlist(self, user):
+        from backend.tradingbot.apiutility import add_stock_to_database
+        ticker = self.cleaned_data['ticker'].upper()
+        try:
+            add_stock_to_database(user=user, ticker=ticker)
+            return "Added to Watchlist successfully"
+        except Exception as e:
+            return str(e)

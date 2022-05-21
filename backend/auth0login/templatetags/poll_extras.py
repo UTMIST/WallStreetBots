@@ -28,3 +28,8 @@ def compare(value, arg):
 def check_positive(value):
     if float(value) > 0:
         return True
+
+
+@register.filter
+def round_2(value):
+    return round(float(value), 2)
