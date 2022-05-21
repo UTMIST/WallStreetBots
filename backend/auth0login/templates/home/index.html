@@ -7,91 +7,91 @@
 
 {% block content %}
 
-    <div class="container-fluid py-4">
-      <div class="row">
+<div class="container-fluid py-4">
+    <div class="row">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Equity</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      $ {{ userdata.total_equity}}
-                      {% if userdata.change_direction == "positive" %}
-                        <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> {{ userdata.percent_change}}%</span>
-                      {% elif userdata.change_direction == "negative" %}
-                        <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> {{ userdata.percent_change}}%</span>
-                      {% endif %}
-                    </h5>
-                  </div>
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-capitalize font-weight-bold">Total Equity</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    $ {{ userdata.total_equity}}
+                                    {% if userdata.change_direction == "positive" %}
+                                    <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> {{ userdata.percent_change}}%</span>
+                                    {% elif userdata.change_direction == "negative" %}
+                                    <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> {{ userdata.percent_change}}%</span>
+                                    {% endif %}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-9">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Marginal Buying Power</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      $ {{ userdata.buy_power }}
-                    </h5>
-                  </div>
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-capitalize font-weight-bold">Marginal Buying Power</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    $ {{ userdata.buy_power }}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Currency</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      {{ userdata.currency }}
-                    </h5>
-                  </div>
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-capitalize font-weight-bold">Currency</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    {{ userdata.currency }}
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
+</div>
 
-      <div class="row mt-4">
-        <div class="col-lg-7 mb-lg-0 mb-4">
-          <div class="card">
+<div class="row mt-4">
+    <div class="col-lg-7 mb-lg-0 mb-4">
+        <div class="card">
             <div class="card-body p-3">
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="d-flex flex-column h-100">
-                    <p class="mb-1 pt-2 text-bold">Welcome</p>
-                    <h4 class="font-weight-bolder">{{user.username}}</h4>
-                    <p class="mb-6"> Alpaca ID: {{ userdata.alpaca_id }} <br>
-                        Alpaca Key: {{ userdata.alpaca_key }} <br>
-                        Shorting: Enabled
-                    </p>
-                  </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="d-flex flex-column h-100">
+                            <p class="mb-1 pt-2 text-bold">Welcome</p>
+                            <h4 class="font-weight-bolder">{{user.username}}</h4>
+                            <p class="mb-6"> Alpaca ID: {{ userdata.alpaca_id }} <br>
+                                Alpaca Key: {{ userdata.alpaca_key }} <br>
+                                Shorting: Enabled
+                            </p>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-        <div class="col-lg-5">
-          <div class="card h-100 p-3">
+    </div>
+    <div class="col-lg-5">
+        <div class="card h-100 p-3">
             <div class="overflow-hidden position-relative border-radius-lg bg-cover h-100">
-              <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
-                      <form role="form text-left" action="" method="post">
+                <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
+                    <form role="form text-left" action="" method="post">
                         {% csrf_token %}
 
-                          <h6>Alpaca ID</h6>
+                        <h6>Alpaca ID</h6>
                         <div class="mb-1 w-100">
                             {{ credential_form.alpaca_id }}
                         </div>
@@ -99,237 +99,266 @@
                         <div class="mb-1 w-100">
                             {{ credential_form.alpaca_key }}
                         </div>
-                          <button type="submit" name="submit_credential" class="btn bg-gradient-info w-100 mt-2 mb-0">Update Credential</button>
-                      </form>
-              </div>
+                        <button type="submit" name="submit_credential" class="btn bg-gradient-info w-100 mt-2 mb-0">
+                            Update Credential
+                        </button>
+                    </form>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-
-
-      <div class="row my-4">
-        <div class="col-lg-8">
-        <div class="col">
-                       <div class="row mb-4">
-            <div class="col-lg-6 mb-lg-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                  <div class="d-flex flex-column h-100">
-                      <h4 class="">Strategy</h4>
-                      <p class="mb-5"> Automatic Trading: Enabled<br>
-                          Rebalancing Strategy:   {{userdata.strategy}} <br>
-                    </p>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="card z-index-2">
-                <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
-                <form action="" method="post">
-                        {% csrf_token %}
-                        <h6>Rebalancing Strategy</h6>
-                        <div class="">
-                            {{ strategy_form.strategy }}
-                        </div>
-                          <button type="submit" name="submit_strategy" class="btn bg-gradient-info w-50 mt-2 mb-0">Update Strategy</button>
-                </form>
-                </div>
-          </div>
-        </div>
-            </div>
-          <div class="card z-index-2">
-            <div class="card-header pb-0">
-              <h4>Portfolio Overview</h4>
-              <p class="text-sm">
-                <i class="fa fa-arrow-up text-success"></i>
-                <span class="font-weight-bold">4%</span> (this section is to be implemented)
-              </p>
-            </div>
-            <div class="card-body p-3">
-              <div class="chart">
-                <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-        </div>
-      <div class="col-lg-4">
-          <div class="card z-index-2">
-            <div class="card-body p-3">
-              <h4 class="ms-2 mb-0"> Place Order </h4>
-              <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
-            <form action="" method="post">
-                {% csrf_token %}
-                <h6>Company Ticker</h6>
-                <div class="mb-3">
-                    {{ order_form.ticker }}
-                </div>
-                <h6>Order Type</h6>
-                <div class="mb-3">
-                    {{ order_form.order_type }}
-                </div>
-                <h6>Transaction Type</h6>
-                <div class="mb-3">
-                    {{ order_form.transaction_type }}
-                </div>
-                <h6>Quantity</h6>
-                <div class="mb-3">
-                    {{ order_form.quantity }}
-                </div>
-                <h6>Time in Force</h6>
-                <div class="mb-3">
-                    {{ order_form.time_in_force }}
-                </div>
-                <button type="submit" name="submit_order" class="btn bg-gradient-secondary w-50 mt-4 mb-7">Submit Order</button>
-            </form>
-              </div>
-            </div>
-          <p>{{ order_submit_form_response }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="row my-4">
-        <div class="col-lg-7 col-md-6 mb-md-0 mb-4">
-          <div class="card">
-            <div class="card-header pb-0">
-              <div class="row">
-                <div class="col-lg-10 col-7">
-                  <h4>Holdings</h4>
-                  <p class="text-sm mb-0">
-                    <span class="font-weight-bold ms-1">Long Portfolio Value:</span> $ {{userdata.long_portfolio_value}}
-                    <span class="font-weight-bold ms-1">Short Portfolio Value:</span> $ {{userdata.short_portfolio_value}} <br>
-                    <span class="font-weight-bold ms-1">Cash:</span> $ {{userdata.cash}} ($ {{userdata.tradable_cash}} tradable)
-                  </p>
-                </div>
-                <div class="col-lg-2 col-5 my-auto text-end">
-                  <div class="dropdown float-lg-end pe-4">
-                    <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="fa fa-ellipsis-v text-secondary"></i>
-                    </a>
-                    <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                        <p><span class="font-weight-bold ms-1">Sort by:</span></p>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Date added</a></li>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Value</a></li>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Gain</a></li>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Side</a></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-body px-0 pb-2">
-              <div class="table-responsive">
-                <table class="table align-items-center mb-6">
-                  <thead>
-                    <tr>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Companies</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Quantity</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Current Price</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Average Entry Price</th>
-                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Side</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for position in userdata.portfolio %}
-                    <tr class="align-middle text-center">
-                      <td>
-                            <h6 class="mb-0 text-sm">{{ position.symbol }}</h6>
-                      </td>
-                      <td class="align-middle text-center">
-                            <h6 class="mb-0 text-sm">{{ position.qty }}</h6>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> $ {{ position.current_price }} </span>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> $ {{ position.avg_entry_price }} </span>
-                      </td>
-                    <td class="align-middle text-center">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{ position.side}}</h6>
-                        </div>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-5 col-md-6">
-          <div class="card">
-            <div class="card-header pb-0">
-              <div class="row">
-                <div class="col-lg-10 col-7">
-                  <h4>Past Orders</h4>
-                </div>
-                <div class="col-lg-2 col-5 my-auto text-end">
-                  <div class="dropdown float-lg-end pe-4">
-                    <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="fa fa-ellipsis-v text-secondary"></i>
-                    </a>
-                    <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                        <p><span class="font-weight-bold ms-1">Sort by:</span></p>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Date</a></li>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Status</a></li>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Company</a></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-body px-0 pb-2">
-              <div class="table-responsive">
-                <table class="table align-items-center mb-6">
-                  <thead>
-                    <tr>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Companies</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Quantity</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for order in userdata.orders %}
-                    <tr class="align-middle text-center">
-                      <td>
-                            <h6 class="mb-0 text-sm">{{ order.stock }}</h6>
-                      </td>
-                      <td class="align-middle text-center">
-                            <h6 class="mb-0 text-sm">{{ order.quantity }}</h6>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> {{ order.timestamp }} utc </span>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> {{ order.status}} </span>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {% include "includes/footer.html" %}
-
     </div>
+</div>
+
+
+<div class="row my-4">
+    <div class="col-lg-8">
+        <div class="col">
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-lg-0 mb-4">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="d-flex flex-column h-100">
+                                    <h4 class="">Strategy</h4>
+                                    <p class="mb-5"> Automatic Trading: Enabled<br>
+                                        Rebalancing Strategy: {{userdata.strategy}} <br>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card z-index-2">
+                        <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <h6>Rebalancing Strategy</h6>
+                                <div class="">
+                                    {{ strategy_form.strategy }}
+                                </div>
+                                <button type="submit" name="submit_strategy"
+                                        class="btn bg-gradient-info w-50 mt-2 mb-0">Update Strategy
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card z-index-2">
+                <div class="card-header pb-0">
+                    <h4>Portfolio Overview</h4>
+                    <p class="text-sm">
+                        <i class="fa fa-arrow-up text-success"></i>
+                        <span class="font-weight-bold">4%</span> (this section is to be implemented)
+                    </p>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart">
+                        <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card z-index-2">
+            <div class="card-body p-3">
+                <h4 class="ms-2 mb-0"> Place Order </h4>
+                <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <h6>Company Ticker</h6>
+                        <div class="mb-3">
+                            {{ order_form.ticker }}
+                        </div>
+                        <h6>Order Type</h6>
+                        <div class="mb-3">
+                            {{ order_form.order_type }}
+                        </div>
+                        <h6>Transaction Type</h6>
+                        <div class="mb-3">
+                            {{ order_form.transaction_type }}
+                        </div>
+                        <h6>Quantity</h6>
+                        <div class="mb-3">
+                            {{ order_form.quantity }}
+                        </div>
+                        <h6>Time in Force</h6>
+                        <div class="mb-3">
+                            {{ order_form.time_in_force }}
+                        </div>
+                        <button type="submit" name="submit_order" class="btn bg-gradient-secondary w-50 mt-4 mb-7">
+                            Submit Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <p>{{ order_submit_form_response }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row my-4">
+    <div class="col-lg-7 col-md-6 mb-md-0 mb-4">
+        <div class="card">
+            <div class="card-header pb-0">
+                <div class="row">
+                    <div class="col-lg-10 col-7">
+                        <h4>Holdings</h4>
+                        <p class="text-sm mb-0">
+                            <span class="font-weight-bold ms-1">Long Portfolio Value:</span> $
+                            {{userdata.long_portfolio_value}}
+                            <span class="font-weight-bold ms-1">Short Portfolio Value:</span> $
+                            {{userdata.short_portfolio_value}} <br>
+                            <span class="font-weight-bold ms-1">Cash:</span> $ {{userdata.cash}} ($
+                            {{userdata.tradable_cash}} tradable)
+                        </p>
+                    </div>
+                    <div class="col-lg-2 col-5 my-auto text-end">
+                        <div class="dropdown float-lg-end pe-4">
+                            <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <i class="fa fa-ellipsis-v text-secondary"></i>
+                            </a>
+                            <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
+                                <p><span class="font-weight-bold ms-1">Sort by:</span></p>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Date added</a></li>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Value</a></li>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Gain</a></li>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Side</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+                <div class="table-responsive">
+                    <table class="table align-items-center mb-6">
+                        <thead>
+                        <tr>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                Companies
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                Quantity
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                Current Price
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                Average Entry Price
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                Side
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for position in userdata.portfolio %}
+                        <tr class="align-middle text-center">
+                            <td>
+                                <h6 class="mb-0 text-sm">{{ position.symbol }}</h6>
+                            </td>
+                            <td class="align-middle text-center">
+                                <h6 class="mb-0 text-sm">{{ position.qty }}</h6>
+                            </td>
+                            <td class="align-middle text-center text-sm">
+                                <span class="text-xs font-weight-bold"> $ {{ position.current_price }} </span>
+                            </td>
+                            <td class="align-middle text-center text-sm">
+                                <span class="text-xs font-weight-bold"> $ {{ position.avg_entry_price }} </span>
+                            </td>
+                            <td class="align-middle text-center">
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-sm">{{ position.side}}</h6>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5 col-md-6">
+        <div class="card">
+            <div class="card-header pb-0">
+                <div class="row">
+                    <div class="col-lg-10 col-7">
+                        <h4>Past Orders</h4>
+                    </div>
+                    <div class="col-lg-2 col-5 my-auto text-end">
+                        <div class="dropdown float-lg-end pe-4">
+                            <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <i class="fa fa-ellipsis-v text-secondary"></i>
+                            </a>
+                            <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
+                                <p><span class="font-weight-bold ms-1">Sort by:</span></p>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Date</a></li>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Status</a></li>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Company</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-0 pb-2">
+                <div class="table-responsive">
+                    <table class="table align-items-center mb-6">
+                        <thead>
+                        <tr>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                Companies
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                Quantity
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                Date
+                            </th>
+                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                Status
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in userdata.orders %}
+                        <tr class="align-middle text-center">
+                            <td>
+                                <h6 class="mb-0 text-sm">{{ order.stock }}</h6>
+                            </td>
+                            <td class="align-middle text-center">
+                                <h6 class="mb-0 text-sm">{{ order.quantity }}</h6>
+                            </td>
+                            <td class="align-middle text-center text-sm">
+                                <span class="text-xs font-weight-bold"> {{ order.timestamp }} utc </span>
+                            </td>
+                            <td class="align-middle text-center text-sm">
+                                <span class="text-xs font-weight-bold"> {{ order.status}} </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "includes/footer.html" %}
+
+</div>
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE --> 
+<!-- Specific JS goes HERE -->
 {% block javascripts %}
 
-  <script>
+<script>
 
     var ctx2 = document.getElementById("chart-line").getContext("2d");
 
@@ -432,6 +461,7 @@
         },
       },
     });
-  </script>
+
+</script>
 
 {% endblock javascripts %}

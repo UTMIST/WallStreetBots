@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 
 from backend.tradingbot.apimanagers import AlpacaManager
-from backend.tradingbot.synchronization import validate_backend, sync_database_company_stock
+from backend.tradingbot.synchronization import validate_backend, sync_database_company_stock, sync_stock_instance
 
 
 def create_local_order(user, ticker, quantity, order_type, transaction_type, status, client_order_id=''):
@@ -85,6 +85,18 @@ def place_general_order(user, user_details, ticker, quantity, transaction_type, 
         raise ValidationError(e)
 
     return True
+
+
+def add_stock_to_database(user, ticker):
+    # 1. check if ticker exists
+    ticker = ticker.upper()
+    backend_api = validate_backend()
+    check, price = backend_api.get_price(ticker)
+    if not check:
+        print("wrong ticker name")
+        raise ValidationError(f'Failed to get price for {ticker}, are you sure that the ticker name is correct?')
+    stock, _ = sync_database_company_stock(ticker)
+    sync_stock_instance(user, user.portfolio, stock)
 
 
 def buy_order_check(order_type, price, quantity, usable_cash):

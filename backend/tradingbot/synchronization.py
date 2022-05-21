@@ -31,6 +31,24 @@ def sync_database_company_stock(ticker):
     return stock, company
 
 
+def sync_stock_instance(user, portfolio, stock):
+    """
+        create a stock instance and
+        add it to the database
+    """
+    from backend.tradingbot.models import StockInstance
+    print("debug4")
+    if not StockInstance.objects.filter(user=user, portfolio=portfolio, stock=stock).exists():
+        # add Stock Instance
+        stock_instance = StockInstance(user=user, portfolio=portfolio, stock=stock, quantity=0)
+        stock_instance.save()
+        print(f"added {stock} to Watchlist")
+    else:
+        stock_instance = StockInstance.objects.get(user=user, portfolio=portfolio, stock=stock)
+        print("debug5", stock_instance)
+    return stock_instance
+
+
 def sync_alpaca(user):  # noqa: C901
     """
         sync user related database data with Alpaca

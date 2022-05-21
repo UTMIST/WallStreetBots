@@ -46,13 +46,48 @@
 
 <div class="container-fluid py-4">
     <div class="row">
-        <div class="col-12">
-            <div id="container" style="width: 10%;">
+        <div class="col-4 ml-3">
+            <div id="container" style="width: 35%;">
                 <canvas id="asset-chart"></canvas>
             </div>
         </div>
+
+         <div class="col-4">
+             <div class="card">
+                 <div class="card-body p-3">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <h6>Add to Watchlist</h6>
+                        <div class="mb-3">
+                            {{ watchlist_form.ticker }}
+                        </div>
+                        <button type="submit" name="add_to_watchlist" class="btn bg-gradient-info w-30 mt-4 mb-2">
+                            Add
+                        </button>
+                    </form>
+                 </div>
+             </div>
+         </div>
+         <div class="col-4">
+             <div class="card">
+                 <div class="card-body p-3">
+                     <form action="" method="post">
+                         {% csrf_token %}
+                         <h6>Rebalancing Strategy</h6>
+                         <div class="">
+                             {{ strategy_form.strategy }}
+                         </div>
+                         <button type="submit" name="submit_strategy"
+                                 class="btn bg-gradient-info w-30 mt-4 mb-2">Update Strategy
+                         </button>
+                     </form>
+                 </div>
+             </div>
+         </div>
     </div>
 </div>
+
+
 
 
 <div class="container-fluid py-4">
