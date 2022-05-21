@@ -37,7 +37,6 @@ def sync_stock_instance(user, portfolio, stock):
         add it to the database
     """
     from backend.tradingbot.models import StockInstance
-    print("debug4")
     if not StockInstance.objects.filter(user=user, portfolio=portfolio, stock=stock).exists():
         # add Stock Instance
         stock_instance = StockInstance(user=user, portfolio=portfolio, stock=stock, quantity=0)
@@ -45,7 +44,6 @@ def sync_stock_instance(user, portfolio, stock):
         print(f"added {stock} to Watchlist")
     else:
         stock_instance = StockInstance.objects.get(user=user, portfolio=portfolio, stock=stock)
-        print("debug5", stock_instance)
     return stock_instance
 
 

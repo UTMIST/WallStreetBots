@@ -74,21 +74,11 @@ class WatchListForm(forms.Form):
 
     ticker = forms.CharField(help_text='Stock ticker')
 
-#    def clean_ticker(self):
-#        ticker = self.cleaned_data['ticker'].upper()
-#
-#        if not check:
-#            raise ValidationError("Please Input a Valid Ticker")  # handle empty image
-#        return uploaded_image
-
     def add_to_watchlist(self, user):
         from backend.tradingbot.apiutility import add_stock_to_database
         ticker = self.cleaned_data['ticker'].upper()
         try:
-            print("debug3")
             add_stock_to_database(user=user, ticker=ticker)
-            #TODO this is not quit right but ok now
             return "Added to Watchlist successfully"
         except Exception as e:
-            print(str(e))
             return str(e)

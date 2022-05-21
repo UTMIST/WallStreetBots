@@ -182,12 +182,11 @@ def positions(request):
     strategy_form = StrategyForm(request.POST or None)
     if request.method == 'POST':
         if 'add_to_watchlist' in request.POST:
-            print("debug1")
             if watchlist_form.is_valid():
-                print("debug2")
                 response = watchlist_form.add_to_watchlist(user)
                 return render(request, 'home/positions.html', {
                     'watchlist_form': watchlist_form,
+                    'strategy_form': strategy_form,
                     'watchlist_form_response': response,
                     'auth0User': auth0user,
                     'userdata': userdata,

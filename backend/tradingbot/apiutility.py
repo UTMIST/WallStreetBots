@@ -93,7 +93,6 @@ def add_stock_to_database(user, ticker):
     backend_api = validate_backend()
     check, price = backend_api.get_price(ticker)
     if not check:
-        print("wrong ticker name")
         raise ValidationError(f'Failed to get price for {ticker}, are you sure that the ticker name is correct?')
     stock, _ = sync_database_company_stock(ticker)
     sync_stock_instance(user, user.portfolio, stock)

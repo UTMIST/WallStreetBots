@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-
+{% load poll_extras %}
 {% block title %} Dashboard {% endblock title %}
 
 <!-- Specific CSS goes HERE -->
@@ -19,9 +19,9 @@
                                 <h5 class="font-weight-bolder mb-0">
                                     $ {{ userdata.total_equity}}
                                     {% if userdata.change_direction == "positive" %}
-                                    <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> {{ userdata.percent_change}}%</span>
+                                    <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> {{ userdata.percent_change | find_percent }}%</span>
                                     {% elif userdata.change_direction == "negative" %}
-                                    <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> {{ userdata.percent_change}}%</span>
+                                    <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> {{ userdata.percent_change | find_percent }}%</span>
                                     {% endif %}
                                 </h5>
                             </div>
@@ -261,13 +261,13 @@
                                 <h6 class="mb-0 text-sm">{{ position.symbol }}</h6>
                             </td>
                             <td class="align-middle text-center">
-                                <h6 class="mb-0 text-sm">{{ position.qty }}</h6>
+                                <h6 class="mb-0 text-sm">{{ position.qty | round_2 }}</h6>
                             </td>
                             <td class="align-middle text-center text-sm">
-                                <span class="text-xs font-weight-bold"> $ {{ position.current_price }} </span>
+                                <span class="text-xs font-weight-bold"> $ {{ position.current_price | round_2}} </span>
                             </td>
                             <td class="align-middle text-center text-sm">
-                                <span class="text-xs font-weight-bold"> $ {{ position.avg_entry_price }} </span>
+                                <span class="text-xs font-weight-bold"> $ {{ position.avg_entry_price | round_2 }} </span>
                             </td>
                             <td class="align-middle text-center">
                                 <div class="d-flex flex-column justify-content-center">
