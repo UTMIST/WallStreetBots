@@ -7,10 +7,9 @@ from django.shortcuts import render, redirect
 from backend.tradingbot.synchronization import sync_alpaca
 import plotly.graph_objects as go
 from datetime import date, timedelta
-# Importing the api and instantiating the rest client according to our keys
 import alpaca_trade_api as api
 import plotly.express as px
-import pandas as pd
+
 
 
 def login(request):
