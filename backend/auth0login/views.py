@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from backend.tradingbot.synchronization import sync_alpaca
 import plotly.graph_objects as go
-from datetime import date
+# from datetime import date
 import alpaca_trade_api as api
 import plotly.express as px
 
