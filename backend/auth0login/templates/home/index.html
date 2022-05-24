@@ -7,6 +7,8 @@
 
 {% block content %}
 
+
+
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
@@ -149,14 +151,19 @@
                 <div class="card-header pb-0">
                     <h4>Portfolio Overview</h4>
                     <p class="text-sm">
-                        <i class="fa fa-arrow-up text-success"></i>
-                        <span class="font-weight-bold">4%</span> (this section is to be implemented)
+                        <span class="font-weight-bold">
+                            {% if userdata.change_direction == "positive" %}
+                            <span class="fa fa-arrow-up text-success text-sm font-weight-bolder"> {{ userdata.percent_change | find_percent }}%</span>
+                            {% elif userdata.change_direction == "negative" %}
+                            <span class="fa fa-arrow-down text-danger text-sm font-weight-bolder"> {{ userdata.percent_change | find_percent }}%</span>
+                            {% endif %}
+                        </span>
                     </p>
                 </div>
-                <div class="card-body p-3">
-                    <div class="chart">
-                        <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
-                    </div>
+                <div class="card-body h-100">
+                    {% autoescape off %}
+                    {{ stock_graph }}
+                    {% endautoescape %}
                 </div>
             </div>
         </div>
@@ -164,7 +171,7 @@
     <div class="col-lg-4">
         <div class="card z-index-2">
             <div class="card-body p-3">
-                <h4 class="ms-2 mb-0"> Place Order </h4>
+                <h4 class="ms-2 mb-0 mt-4"> Place Order </h4>
                 <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
                     <form action="" method="post">
                         {% csrf_token %}
