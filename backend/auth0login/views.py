@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from backend.tradingbot.synchronization import sync_alpaca
 import plotly.graph_objects as go
-from datetime import date, timedelta
+from datetime import date
 import alpaca_trade_api as api
 import plotly.express as px
 
@@ -127,8 +127,7 @@ def get_portfolio_chart(request):
     API_KEY = user.credential.alpaca_id
     API_SECRET = user.credential.alpaca_key
     BASE_URL = "https://paper-api.alpaca.markets"
-    alpaca = api.REST(key_id=API_KEY, secret_key=API_SECRET,
-                    base_url=BASE_URL, api_version='v2')
+    alpaca = api.REST(key_id=API_KEY, secret_key=API_SECRET, base_url=BASE_URL, api_version='v2')
     portfolio_hist = alpaca.get_portfolio_history().df
     portfolio_hist = portfolio_hist.reset_index()
     line_plot = px.line(portfolio_hist, "timestamp", "equity")
@@ -150,7 +149,7 @@ def get_stock_chart(request, symbol):
     # Setting parameters before calling method
     timeframe = "1Day"
     start = "2021-01-01"
-    today = date.today()
+    # today = date.today()
     end = "2021-02-01"
     # Retrieve daily bars for SPY in a dataframe and printing the first 5 rows
     spy_bars = alpaca.get_bars(symbol, timeframe, start, end).df
