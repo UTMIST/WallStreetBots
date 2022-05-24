@@ -11,7 +11,6 @@ import alpaca_trade_api as api
 import plotly.express as px
 
 
-
 def login(request):
     user = request.user
     if user.is_authenticated:
@@ -22,7 +21,6 @@ def login(request):
 
 @login_required()
 def get_user_information(request):
-    # this function will request and sync user information from alpaca given the correct credentials
     user = request.user
     user_details = sync_alpaca(user)  # sync the user with Alpaca and extract details
     auth0user = user.social_auth.get(provider='auth0')
@@ -124,7 +122,6 @@ def dashboard(request):
 @login_required()
 def get_portfolio_chart(request):
     user, userdata, auth0user, user_details = get_user_information(request)
-
     if user_details is None:
         return
     API_KEY = user.credential.alpaca_id
@@ -132,7 +129,6 @@ def get_portfolio_chart(request):
     BASE_URL = "https://paper-api.alpaca.markets"
     alpaca = api.REST(key_id=API_KEY, secret_key=API_SECRET,
                     base_url=BASE_URL, api_version='v2')
-
     portfolio_hist = alpaca.get_portfolio_history().df
     portfolio_hist = portfolio_hist.reset_index()
     line_plot = px.line(portfolio_hist, "timestamp", "equity")
@@ -140,7 +136,6 @@ def get_portfolio_chart(request):
         xaxis_title="",
         yaxis_title="Equity"
     )
-
     line_plot = line_plot.to_html()
     return line_plot
 
@@ -156,7 +151,6 @@ def get_stock_chart(request, symbol):
     timeframe = "1Day"
     start = "2021-01-01"
     today = date.today()
-    yesterday = today - timedelta(days=1)
     end = "2021-02-01"
     # Retrieve daily bars for SPY in a dataframe and printing the first 5 rows
     spy_bars = alpaca.get_bars(symbol, timeframe, start, end).df
