@@ -4,8 +4,11 @@ from django.contrib.auth import logout as log_out
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-
 from backend.tradingbot.synchronization import sync_alpaca
+import plotly.graph_objects as go
+# from datetime import date
+import alpaca_trade_api as api
+import plotly.express as px
 
 
 def login(request):
@@ -18,7 +21,6 @@ def login(request):
 
 @login_required()
 def get_user_information(request):
-    # this function will request and sync user information from alpaca given the correct credentials
     user = request.user
     user_details = sync_alpaca(user)  # sync the user with Alpaca and extract details
     auth0user = user.social_auth.get(provider='auth0')
@@ -106,13 +108,59 @@ def dashboard(request):
                 user.portfolio.save()
                 return HttpResponseRedirect('/')
 
+    graph = get_portfolio_chart(request)
     return render(request, 'home/index.html', {
         'credential_form': credential_form,
         'order_form': order_form,
         'strategy_form': strategy_form,
         'auth0User': auth0user,
         'userdata': userdata,
+        'stock_graph': graph
     })
+
+
+@login_required()
+def get_portfolio_chart(request):
+    user, userdata, auth0user, user_details = get_user_information(request)
+    if user_details is None:
+        return
+    API_KEY = user.credential.alpaca_id
+    API_SECRET = user.credential.alpaca_key
+    BASE_URL = "https://paper-api.alpaca.markets"
+    alpaca = api.REST(key_id=API_KEY, secret_key=API_SECRET, base_url=BASE_URL, api_version='v2')
+    portfolio_hist = alpaca.get_portfolio_history().df
+    portfolio_hist = portfolio_hist.reset_index()
+    line_plot = px.line(portfolio_hist, "timestamp", "equity")
+    line_plot.update_layout(
+        xaxis_title="",
+        yaxis_title="Equity"
+    )
+    line_plot = line_plot.to_html()
+    return line_plot
+
+
+@login_required
+def get_stock_chart(request, symbol):
+    user, userdata, auth0user, user_details = get_user_information(request)
+
+    API_KEY = user.credential.alpaca_id
+    API_SECRET = user.credential.alpaca_key
+    alpaca = api.REST(API_KEY, API_SECRET)
+    # Setting parameters before calling method
+    timeframe = "1Day"
+    start = "2021-01-01"
+    # today = date.today()
+    end = "2021-02-01"
+    # Retrieve daily bars for SPY in a dataframe and printing the first 5 rows
+    spy_bars = alpaca.get_bars(symbol, timeframe, start, end).df
+    candlestick_fig = go.Figure(
+        data=[go.Candlestick(x=spy_bars.index, open=spy_bars['open'],
+                             high=spy_bars['high'], low=spy_bars['low'], close=spy_bars['close'])])
+    candlestick_fig.update_layout(
+        xaxis_title="Date",
+        yaxis_title="Price ($USD)")
+    candlestick_fig = candlestick_fig.to_html()
+    return candlestick_fig
 
 
 @login_required
