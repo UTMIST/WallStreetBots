@@ -156,17 +156,17 @@
                                     <h6 class="mb-0 text-sm">{{ position.qty }}</h6>
                                 </td>
                                 <td class="align-middle text-center text-sm">
-                                    <h6 class="text-xs font-weight-bold"> $ {{ position.current_price }} </h6>
+                                    <h6 class="text-xs font-weight-bold"> $ {{ position.current_price  | round_2}} </h6>
                                 </td>
                                 <td class="align-middle text-center text-sm">
-                                    <h6 class="text-xs font-weight-bold"> $ {{ position.avg_entry_price }} </h6>
+                                    <h6 class="text-xs font-weight-bold"> $ {{ position.avg_entry_price | round_2 }} </h6>
                                 </td>
 
                                 <td class="align-middle text-center">
-                                    <h6 class="text-xs font-weight-bold">$ {{ position.cost_basis }} </h6>
+                                    <h6 class="text-xs font-weight-bold">$ {{ position.cost_basis | round_2}} </h6>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <h6 class="text-xs font-weight-bold"> $ {{ position.market_value }}</h6>
+                                    <h6 class="text-xs font-weight-bold"> $ {{ position.market_value  | round_2}}</h6>
                                 </td>
                                 <td class="align-middle text-center">
                                     {% with bool=position.change_today|check_positive %}
@@ -180,9 +180,9 @@
                                 <td class="align-middle text-center">
                                     {% with bool=position.unrealized_intraday_pl|check_positive %}
                                     {% if bool %}
-                                    <h6 class="text-success text-sm font-weight-bolder"> ${{ position.unrealized_intraday_pl }}</h6>
+                                    <h6 class="text-success text-sm font-weight-bolder"> ${{ position.unrealized_intraday_pl | round_2 }}</h6>
                                     {% else %}
-                                    <h6 class="text-danger text-sm font-weight-bolder"> ${{ position.unrealized_intraday_pl }}</h6>
+                                    <h6 class="text-danger text-sm font-weight-bolder"> ${{ position.unrealized_intraday_pl | round_2 }}</h6>
                                     {% endif %}
                                     {% endwith %}
                                 </td>
@@ -200,9 +200,9 @@
                                 <td class="align-middle text-center">
                                     {% with bool=position.unrealized_pl|check_positive %}
                                     {% if bool %}
-                                    <h6 class="text-success text-sm font-weight-bolder"> $ {{ position.unrealized_pl}}</h6>
+                                    <h6 class="text-success text-sm font-weight-bolder"> $ {{ position.unrealized_pl | round_2}}</h6>
                                     {% else %}
-                                    <h6 class="text-danger text-sm font-weight-bolder"> $ {{ position.unrealized_pl }}</h6>
+                                    <h6 class="text-danger text-sm font-weight-bolder"> $ {{ position.unrealized_pl | round_2 }}</h6>
                                     {% endif %}
                                     {% endwith %}
                                 </td>
