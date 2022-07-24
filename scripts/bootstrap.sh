@@ -58,8 +58,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
   pyenv local 3.9.6
 
   echo "Setting up database"
-  createdb wsbots
-  sudo -u postgres psql postgres -d wsbots_db -f ./db_setup.sql
+  sudo -u postgres psql postgres -f ./db_setup.sql
 
 
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
